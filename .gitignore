@@ -1,0 +1,36 @@
+# ---- Environment / secrets ----
+.env
+.env.local
+.env.*.local
+*.pfx
+*.key
+
+# ---- .NET ----
+bin/
+obj/
+*.user
+*.suo
+artifacts/
+TestResults/
+[Ll]ogs/
+
+# ---- Node / Next.js ----
+node_modules/
+.next/
+out/
+.turbo/
+next-env.d.ts
+*.tsbuildinfo
+
+# ---- IDE / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Claude Code (makineye yerel ayarlar) ----
+.claude/
+
+# ---- Docker ----
+postgres-data/
+redis-data/
