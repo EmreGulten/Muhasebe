@@ -3,8 +3,8 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2** kapsamını içerir: proje kurulumu, kimlik doğrulama,
-çok kiracılı (multi-tenant) işletme sistemi ve cari hesaplar (müşteri/tedarikçi).
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi) ve ürün/stok yönetimi.
 
 ## Bu fazda çalışanlar
 
@@ -19,6 +19,16 @@ Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2** kapsamını içerir: 
   hareketleri ilgili modüllerden oluşur
 - Bakiye = Σborç − Σalacak; cari ekstresi: tarih sıralı hareketler, çalışan bakiye, sayfalama
 - Müşteri/Tedarikçi listeleri: arama, tür filtresi, pasifleri göster, sayfalama
+- Ürün/hizmet kartları: SKU (tenant içinde benzersiz), barkod, kategori/birim, alış/satış fiyatı,
+  KDV oranı, kritik stok eşiği; hizmet kartlarında stok takibi yapılmaz
+- Kategori, birim ve depo tanımları; ilk depo listelemede otomatik "Ana Depo" olarak oluşur,
+  varsayılan depo silinemez
+- Manuel stok hareketleri: sayım (fark hareketi otomatik), manuel giriş/çıkış, iade; alış/satış
+  hareketleri ilgili modüllerden oluşur
+- Depolar arası transfer: tek işlemde çıkış + giriş çifti (atomik)
+- Stok = Σişaretli miktar; kritik stok uyarısı (eşik > 0 ve stok ≤ eşik), depo bazlı stok dökümü
+- Ürün listesi: ad/SKU/barkod arama, kategori ve kritik stok filtreleri, pasifleri göster, sayfalama
+- Hareketli ürün silinemez (kayıt zinciri korunur); pasifleştirme önerilir
 - Dashboard kabuğu: plan bölüm 27'deki gezinme, sonraki faz modülleri "Yakında" etiketiyle
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
@@ -46,9 +56,9 @@ backend/
   tests/Accounting.UnitTests/
 frontend/
   src/app/(auth)/                 # login, register, forgot/reset password
-  src/app/(app)/                  # korumalı alan: dashboard, business/new, customers, suppliers
-  src/components/                 # app-shell, cari bileşenleri (liste/kart/ekstre/formlar), ui/
-  src/lib/                        # api istemcisi (401→sessiz refresh), tipler, cari yardımcıları, gezinme
+  src/app/(app)/                  # korumalı alan: dashboard, business/new, customers, suppliers, products, settings
+  src/components/                 # app-shell, cari ve ürün/stok bileşenleri, tanımlar, ui/
+  src/lib/                        # api istemcisi (401→sessiz refresh), tipler, cari/ürün yardımcıları, gezinme
 docker-compose.yml
 .env.example
 ```
@@ -135,7 +145,7 @@ dotnet test Accounting.slnx
 - [x] PHASE 0 — kurulum, Docker, CI iskeleti
 - [x] PHASE 1 — Authentication + Tenant
 - [x] PHASE 2 — Cari hesaplar (müşteri/tedarikçi kartları, hareketler, bakiye, ekstre)
-- [ ] PHASE 3 — Ürün + Stok (kategori, birim, depo, stok hareketi, kritik stok)
+- [x] PHASE 3 — Ürün + Stok (kategori, birim, depo, stok hareketi, kritik stok)
 - [ ] PHASE 4 — Satışlar (belge, kalemler, onay, stok düşümü, tahsilat, iptal)
 - [ ] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
 - [ ] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
