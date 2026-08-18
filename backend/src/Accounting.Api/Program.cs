@@ -1,5 +1,6 @@
 using System.Text;
 using System.Threading.RateLimiting;
+using Accounting.Api.Authorization;
 using Accounting.Api.Endpoints;
 using Accounting.Api.Middleware;
 using Accounting.Application;
@@ -61,6 +62,10 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
+
+// "perm:<izin>" politikaları roller üzerinden değerlendirilir (muhasebe.md bölüm 14).
+builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, PermissionAuthorizationHandler>();
 
 // ---- Rate limiting (auth endpoint'leri IP başına dakikada 20 istek)
 builder.Services.AddRateLimiter(options =>
@@ -127,6 +132,7 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
 var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
 api.MapAuthEndpoints();
 api.MapTenantEndpoints();
+api.MapPartyEndpoints();
 
 app.Run();
 

@@ -1,5 +1,6 @@
 using Accounting.Application.Abstractions;
 using Accounting.Application.Features.Auth;
+using Accounting.Application.Features.Parties;
 using Accounting.Application.Features.Tenants;
 using Accounting.Application.Services;
 using Accounting.Application.Validators;
@@ -27,6 +28,15 @@ public static class DependencyInjection
         services.AddScoped<CreateTenantHandler>();
         services.AddScoped<ListTenantsHandler>();
         services.AddScoped<GetTenantHandler>();
+
+        // Cari
+        services.AddScoped<CreatePartyHandler>();
+        services.AddScoped<UpdatePartyHandler>();
+        services.AddScoped<DeletePartyHandler>();
+        services.AddScoped<GetPartyHandler>();
+        services.AddScoped<ListPartiesHandler>();
+        services.AddScoped<CreatePartyTransactionHandler>();
+        services.AddScoped<GetPartyStatementHandler>();
 
         services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 

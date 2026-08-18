@@ -17,6 +17,10 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRo
 
     public DbSet<UserTenant> UserTenants => Set<UserTenant>();
 
+    public DbSet<Party> Parties => Set<Party>();
+
+    public DbSet<PartyTransaction> PartyTransactions => Set<PartyTransaction>();
+
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();

@@ -101,3 +101,62 @@ public sealed class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
         builder.HasIndex(a => a.EntityType);
     }
 }
+
+public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
+{
+    public void Configure(EntityTypeBuilder<Party> builder)
+    {
+        builder.ToTable("Parties");
+
+        // Silinmiş cariler sorgularda otomatik süzülür.
+        builder.HasQueryFilter(p => !p.IsDeleted);
+
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Name)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(p => p.Type).HasConversion<int>();
+
+        builder.Property(p => p.TaxNumber).HasMaxLength(20);
+        builder.Property(p => p.TaxOffice).HasMaxLength(60);
+        builder.Property(p => p.Phone).HasMaxLength(30);
+        builder.Property(p => p.Email).HasMaxLength(150);
+        builder.Property(p => p.Address).HasMaxLength(300);
+        builder.Property(p => p.City).HasMaxLength(60);
+        builder.Property(p => p.District).HasMaxLength(60);
+        builder.Property(p => p.ContactName).HasMaxLength(120);
+        builder.Property(p => p.Notes).HasMaxLength(1000);
+
+        // Liste ve tenant izolasyonu için sorgu desenleri.
+        builder.HasIndex(p => new { p.TenantId, p.Name });
+        builder.HasIndex(p => new { p.TenantId, p.IsActive });
+
+        builder.HasMany(p => p.Transactions)
+            .WithOne(t => t.Party)
+            .HasForeignKey(t => t.PartyId)
+            .OnDelete(DeleteBehavior.Restrict); // hareket zinciri cascade'siz kalmalı
+    }
+}
+
+public sealed class PartyTransactionConfiguration : IEntityTypeConfiguration<PartyTransaction>
+{
+    public void Configure(EntityTypeBuilder<PartyTransaction> builder)
+    {
+        builder.ToTable("PartyTransactions");
+
+        builder.HasKey(t => t.Id);
+
+        builder.Property(t => t.Type).HasConversion<int>();
+
+        builder.Property(t => t.Description).HasMaxLength(300);
+        builder.Property(t => t.ReferenceType).HasMaxLength(50);
+
+        // Ekstre sorgusu: tenant + party + tarih sırası.
+        builder.HasIndex(t => new { t.TenantId, t.PartyId, t.Date });
+
+        // Üretilecek referans kayıtlar (satış/alış) üzerinden ters bulma.
+        builder.HasIndex(t => new { t.TenantId, t.ReferenceType, t.ReferenceId });
+    }
+}

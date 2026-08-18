@@ -14,6 +14,10 @@ public interface IApplicationDbContext
 
     DbSet<UserTenant> UserTenants { get; }
 
+    DbSet<Party> Parties { get; }
+
+    DbSet<PartyTransaction> PartyTransactions { get; }
+
     DbSet<RefreshToken> RefreshTokens { get; }
 
     DbSet<AuditLog> AuditLogs { get; }
