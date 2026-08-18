@@ -3,8 +3,8 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3** kapsamını içerir: proje kurulumu, kimlik doğrulama,
-çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi) ve ürün/stok yönetimi.
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi ve satış belgeleri.
 
 ## Bu fazda çalışanlar
 
@@ -29,6 +29,19 @@ Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3** kapsamını
 - Stok = Σişaretli miktar; kritik stok uyarısı (eşik > 0 ve stok ≤ eşik), depo bazlı stok dökümü
 - Ürün listesi: ad/SKU/barkod arama, kategori ve kritik stok filtreleri, pasifleri göster, sayfalama
 - Hareketli ürün silinemez (kayıt zinciri korunur); pasifleştirme önerilir
+- Satış belgeleri: S-000001... numara serisi (tenant içinde benzersiz), müşteri (opsiyonel — nakit
+  satış), depo (varsayılan "Ana Depo" lazy oluşur), vade tarihi, açıklama
+- Kalem hesaplamaları: brüt = Round(miktar × fiyat); iskonto oranı; KDV zinciri — tüm tutarlar
+  kalem bazında yuvarlanır (2 basamak), belge toplamları kalemlerden toplanır
+- Taslak → Onay: onay tek transaction'da stok düşümü (hizmet kalemleri hariç) + cari borç +
+  (istenirse) anlık tahsilat yazar; yetersiz stokta belge onaylanmaz ve hiçbir hareket yazılmaz
+- Tahsilatlar: kasa hareketi (ilk tahsilatta "Kasa" hesabı oluşur) + cari alacak; kısmi tahsilat
+  (PartiallyPaid) → tam tahsilat (Paid); kalan borcu aşan tahsilat reddedilir
+- İptal: ters hareketlerle dengeleme — stok geri eklenir, cari borç ve tahsilatların cari alacağı
+  ters işaretle kapanır, kasa hareketleri iade edilir; kayıtlar silinmez, terminal durumdur
+- Onaylı belge değiştirilemez/silinemez (409); taslak serbestçe düzenlenir ya da silinir
+- Satış listesi: durum filtresi, belge no/müşteri araması, sayfalama; frontend'de belge formu
+  (dinamik kalemler, canlı toplamlar), detay (onay/iptal/tahsilat diyaloğu)
 - Dashboard kabuğu: plan bölüm 27'deki gezinme, sonraki faz modülleri "Yakında" etiketiyle
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
@@ -146,7 +159,7 @@ dotnet test Accounting.slnx
 - [x] PHASE 1 — Authentication + Tenant
 - [x] PHASE 2 — Cari hesaplar (müşteri/tedarikçi kartları, hareketler, bakiye, ekstre)
 - [x] PHASE 3 — Ürün + Stok (kategori, birim, depo, stok hareketi, kritik stok)
-- [ ] PHASE 4 — Satışlar (belge, kalemler, onay, stok düşümü, tahsilat, iptal)
+- [x] PHASE 4 — Satışlar (belge, kalemler, onay, stok düşümü, tahsilat, iptal)
 - [ ] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
 - [ ] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
 - [ ] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
