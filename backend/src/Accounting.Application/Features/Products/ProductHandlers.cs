@@ -285,6 +285,7 @@ public sealed class ListProductsHandler(IApplicationDbContext db, ICurrentTenant
                 CategoryName = row.Product.Category != null ? row.Product.Category.Name : null,
                 UnitName = row.Product.Unit != null ? (row.Product.Unit.Code ?? row.Product.Unit.Name) : null,
                 row.Product.SalePrice,
+                row.Product.VatRate,
                 row.Product.MinimumStock,
                 row.Product.IsService,
                 row.Product.IsActive,
@@ -294,7 +295,7 @@ public sealed class ListProductsHandler(IApplicationDbContext db, ICurrentTenant
 
         var summaries = items.Select(row => new ProductSummaryDto(
                 row.Id, row.Name, row.Sku, row.Barcode, row.CategoryName, row.UnitName,
-                row.SalePrice, row.Stock,
+                row.SalePrice, row.VatRate, row.Stock,
                 ProductQueries.IsCritical(row.MinimumStock, row.Stock),
                 row.IsService, row.IsActive))
             .ToList();

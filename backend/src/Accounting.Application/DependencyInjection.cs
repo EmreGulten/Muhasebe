@@ -2,6 +2,7 @@ using Accounting.Application.Abstractions;
 using Accounting.Application.Features.Auth;
 using Accounting.Application.Features.Parties;
 using Accounting.Application.Features.Products;
+using Accounting.Application.Features.Sales;
 using Accounting.Application.Features.Tenants;
 using Accounting.Application.Services;
 using Accounting.Application.Validators;
@@ -64,6 +65,16 @@ public static class DependencyInjection
         services.AddScoped<CreateWarehouseHandler>();
         services.AddScoped<UpdateWarehouseHandler>();
         services.AddScoped<DeleteWarehouseHandler>();
+
+        // Satış
+        services.AddScoped<CreateSaleHandler>();
+        services.AddScoped<UpdateSaleHandler>();
+        services.AddScoped<DeleteSaleHandler>();
+        services.AddScoped<GetSaleHandler>();
+        services.AddScoped<ListSalesHandler>();
+        services.AddScoped<ConfirmSaleHandler>();
+        services.AddScoped<CancelSaleHandler>();
+        services.AddScoped<AddSalePaymentHandler>();
 
         services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 

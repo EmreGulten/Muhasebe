@@ -297,3 +297,135 @@ public sealed class InventoryTransactionConfiguration : IEntityTypeConfiguration
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+// ---- Satış (PHASE 4)
+
+public sealed class SaleConfiguration : IEntityTypeConfiguration<Sale>
+{
+    public void Configure(EntityTypeBuilder<Sale> builder)
+    {
+        builder.ToTable("Sales");
+
+        builder.HasKey(s => s.Id);
+
+        builder.Property(s => s.Number).HasMaxLength(20);
+        builder.Property(s => s.Description).HasMaxLength(500);
+        builder.Property(s => s.CancelReason).HasMaxLength(300);
+        builder.Property(s => s.Status).HasConversion<int>();
+
+        builder.HasQueryFilter(s => !s.IsDeleted);
+
+        // Numara tenant içinde benzersiz (eşzamanlı seri atamasını DB düzeyinde korur).
+        builder.HasIndex(s => new { s.TenantId, s.Number }).IsUnique();
+
+        // Liste sorguları: durum + tarih, müşteri filtresi.
+        builder.HasIndex(s => new { s.TenantId, s.Status, s.Date });
+        builder.HasIndex(s => new { s.TenantId, s.PartyId });
+
+        builder.HasOne(s => s.Party)
+            .WithMany()
+            .HasForeignKey(s => s.PartyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(s => s.Warehouse)
+            .WithMany()
+            .HasForeignKey(s => s.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+/// <summary>Satış kalemi — belge ile birlikte yaşar, defter kaydı değildir.</summary>
+public sealed class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
+{
+    public void Configure(EntityTypeBuilder<SaleItem> builder)
+    {
+        builder.ToTable("SaleItems");
+
+        builder.HasKey(i => i.Id);
+
+        builder.Property(i => i.ProductName).HasMaxLength(200);
+        builder.Property(i => i.Quantity).HasColumnType("numeric(18,4)");
+        // Fiyat/tutar alanları AppDbContext varsayılanından numeric(18,2) alır.
+
+        builder.HasIndex(i => new { i.TenantId, i.ProductId });
+
+        builder.HasOne(i => i.Sale)
+            .WithMany(s => s.Items)
+            .HasForeignKey(i => i.SaleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(i => i.Product)
+            .WithMany()
+            .HasForeignKey(i => i.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+/// <summary>Tahsilat — defter kaydı, silinmez.</summary>
+public sealed class SalePaymentConfiguration : IEntityTypeConfiguration<SalePayment>
+{
+    public void Configure(EntityTypeBuilder<SalePayment> builder)
+    {
+        builder.ToTable("SalePayments");
+
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Description).HasMaxLength(300);
+
+        builder.HasIndex(p => new { p.TenantId, p.SaleId });
+        builder.HasIndex(p => new { p.TenantId, p.AccountId, p.Date });
+
+        builder.HasOne(p => p.Sale)
+            .WithMany(s => s.Payments)
+            .HasForeignKey(p => p.SaleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(p => p.Account)
+            .WithMany()
+            .HasForeignKey(p => p.AccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+/// <summary>Kasa/banka hesabı — PHASE 4 minimal (default "Kasa"), yönetimi PHASE 6.</summary>
+public sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
+{
+    public void Configure(EntityTypeBuilder<Account> builder)
+    {
+        builder.ToTable("Accounts");
+
+        builder.HasKey(a => a.Id);
+
+        builder.Property(a => a.Name).HasMaxLength(100);
+
+        builder.HasQueryFilter(a => !a.IsDeleted);
+
+        builder.HasIndex(a => new { a.TenantId, a.IsDefault });
+    }
+}
+
+/// <summary>Hesap hareketi — defter kaydı, işaretli tutarla numeric(18,2).</summary>
+public sealed class AccountTransactionConfiguration : IEntityTypeConfiguration<AccountTransaction>
+{
+    public void Configure(EntityTypeBuilder<AccountTransaction> builder)
+    {
+        builder.ToTable("AccountTransactions");
+
+        builder.HasKey(t => t.Id);
+
+        builder.Property(t => t.Type).HasConversion<int>();
+        builder.Property(t => t.Description).HasMaxLength(300);
+        builder.Property(t => t.ReferenceType).HasMaxLength(50);
+
+        // Hesap ekstresi: tenant + hesap + tarih.
+        builder.HasIndex(t => new { t.TenantId, t.AccountId, t.Date });
+
+        // Üretici kayıt üzerinden ters bulma (satış iptali vb.).
+        builder.HasIndex(t => new { t.TenantId, t.ReferenceType, t.ReferenceId });
+
+        builder.HasOne(t => t.Account)
+            .WithMany(a => a.Transactions)
+            .HasForeignKey(t => t.AccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}

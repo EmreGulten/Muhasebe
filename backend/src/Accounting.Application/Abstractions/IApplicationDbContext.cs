@@ -28,6 +28,16 @@ public interface IApplicationDbContext
 
     DbSet<InventoryTransaction> InventoryTransactions { get; }
 
+    DbSet<Sale> Sales { get; }
+
+    DbSet<SaleItem> SaleItems { get; }
+
+    DbSet<SalePayment> SalePayments { get; }
+
+    DbSet<Account> Accounts { get; }
+
+    DbSet<AccountTransaction> AccountTransactions { get; }
+
     DbSet<RefreshToken> RefreshTokens { get; }
 
     DbSet<AuditLog> AuditLogs { get; }
