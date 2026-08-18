@@ -23,14 +23,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
+import { computeDocumentTotals } from "@/lib/document-math";
 import { dateInputToIso, formatDate, formatMoney, isoToDateInput, parseMoneyInput, toMoneyInput } from "@/lib/parties";
 import { parseQuantityInput } from "@/lib/products";
-import { computeDocumentTotals } from "@/lib/document-math";
 import type {
   PartySummaryDto,
   PagedResponse,
   ProductSummaryDto,
-  SaleResponse,
+  PurchaseResponse,
   WarehouseDto,
 } from "@/lib/types";
 
@@ -54,7 +54,7 @@ const rate = z
     { message: "0 ile 100 arasında bir oran girin." },
   );
 
-const saleSchema = z
+const purchaseSchema = z
   .object({
     partyId: z.string(),
     warehouseId: z.string(),
@@ -83,26 +83,26 @@ const saleSchema = z
     }
   });
 
-type SaleFormValues = z.infer<typeof saleSchema>;
+type PurchaseFormValues = z.infer<typeof purchaseSchema>;
 
 const todayInput = () => isoToDateInput(new Date().toISOString());
 
-/** Satış belgesi oluştur-düzenle formu. Düzenleme yalnızca taslak belgede açılır. */
-export function SaleForm({ sale }: { sale?: SaleResponse }) {
+/** Alış belgesi oluştur-düzenle formu. Düzenleme yalnızca taslak belgede açılır. */
+export function PurchaseForm({ purchase }: { purchase?: PurchaseResponse }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const isEdit = Boolean(sale);
+  const isEdit = Boolean(purchase);
 
   const { data: productPage } = useQuery({
-    queryKey: ["products", "for-sale"],
+    queryKey: ["products", "for-purchase"],
     queryFn: () =>
       api<PagedResponse<ProductSummaryDto>>("/api/v1/products?includeInactive=false&page=1&pageSize=100"),
     staleTime: 60_000,
   });
   const { data: partyPage } = useQuery({
-    queryKey: ["parties", "customers-for-sale"],
+    queryKey: ["parties", "suppliers-for-purchase"],
     queryFn: () =>
-      api<PagedResponse<PartySummaryDto>>("/api/v1/parties?type=Customer&includeInactive=false&page=1&pageSize=100"),
+      api<PagedResponse<PartySummaryDto>>("/api/v1/parties?type=Supplier&includeInactive=false&page=1&pageSize=100"),
     staleTime: 60_000,
   });
   const { data: warehouses } = useQuery({
@@ -117,16 +117,16 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
     control,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<SaleFormValues>({
-    resolver: zodResolver(saleSchema),
-    defaultValues: sale
+  } = useForm<PurchaseFormValues>({
+    resolver: zodResolver(purchaseSchema),
+    defaultValues: purchase
       ? {
-          partyId: sale.partyId ?? "none",
-          warehouseId: sale.warehouseId,
-          date: isoToDateInput(sale.date),
-          dueDate: sale.dueDate ? isoToDateInput(sale.dueDate) : "",
-          description: sale.description ?? "",
-          items: sale.items.map((item) => ({
+          partyId: purchase.partyId ?? "none",
+          warehouseId: purchase.warehouseId,
+          date: isoToDateInput(purchase.date),
+          dueDate: purchase.dueDate ? isoToDateInput(purchase.dueDate) : "",
+          description: purchase.description ?? "",
+          items: purchase.items.map((item) => ({
             productId: item.productId,
             quantity: String(item.quantity),
             unitPrice: toMoneyInput(item.unitPrice),
@@ -159,7 +159,7 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
   );
 
   const save = useMutation({
-    mutationFn: (values: SaleFormValues) => {
+    mutationFn: (values: PurchaseFormValues) => {
       const body = {
         partyId: values.partyId === "none" ? null : values.partyId,
         warehouseId: values.warehouseId === "default" ? null : values.warehouseId,
@@ -174,31 +174,31 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
           vatRate: parseMoneyInput(item.vatRate) ?? 0,
         })),
       };
-      return api<SaleResponse>(isEdit ? `/api/v1/sales/${sale!.id}` : "/api/v1/sales", {
+      return api<PurchaseResponse>(isEdit ? `/api/v1/purchases/${purchase!.id}` : "/api/v1/purchases", {
         method: isEdit ? "PUT" : "POST",
         body: JSON.stringify(body),
       });
     },
     onSuccess: (saved) => {
-      queryClient.invalidateQueries({ queryKey: ["sales"] });
-      queryClient.invalidateQueries({ queryKey: ["sale", saved.id] });
-      toast.success(isEdit ? "Satış güncellendi." : `Satış oluşturuldu (${saved.number}). Onayla ile stok düşer.`);
-      router.push(`/sales/${saved.id}`);
+      queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      queryClient.invalidateQueries({ queryKey: ["purchase", saved.id] });
+      toast.success(isEdit ? "Alış güncellendi." : `Alış oluşturuldu (${saved.number}). Onayla ile stok girer.`);
+      router.push(`/purchases/${saved.id}`);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Satış kaydedilemedi.");
+      toast.error(error instanceof Error ? error.message : "Alış kaydedilemedi.");
     },
   });
 
   const onSubmit = handleSubmit((values) => save.mutateAsync(values).catch(() => undefined));
 
-  /** Ürün seçilince boş alanlara ürünün varsayılanlarını yaz (fiyat, KDV). */
+  /** Ürün seçilince boş alanlara ürünün varsayılanlarını yaz (alış fiyatı, KDV). */
   const onProductChange = (index: number, productId: string) => {
     setValue(`items.${index}.productId`, productId, { shouldValidate: true });
     const product = watchedProducts.find((candidate) => candidate.id === productId);
     if (!product) return;
     if (!watchedItems[index]?.unitPrice) {
-      setValue(`items.${index}.unitPrice`, toMoneyInput(product.salePrice));
+      setValue(`items.${index}.unitPrice`, toMoneyInput(product.purchasePrice));
     }
     if (!watchedItems[index]?.vatRate) {
       setValue(`items.${index}.vatRate`, toMoneyInput(product.vatRate));
@@ -209,17 +209,17 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
     <form onSubmit={onSubmit} className="grid gap-6" noValidate>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="grid gap-2">
-          <Label htmlFor="sale-party">Müşteri</Label>
+          <Label htmlFor="purchase-party">Tedarikçi</Label>
           <Controller
             control={control}
             name="partyId"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="sale-party">
-                  <SelectValue placeholder="Müşteri seçin" />
+                <SelectTrigger id="purchase-party">
+                  <SelectValue placeholder="Tedarikçi seçin" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Nakit (müşterisiz)</SelectItem>
+                  <SelectItem value="none">Nakit (tedarikçisiz)</SelectItem>
                   {(partyPage?.items ?? []).map((party) => (
                     <SelectItem key={party.id} value={party.id}>
                       {party.name}
@@ -229,17 +229,17 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
               </Select>
             )}
           />
-          <p className="text-xs text-muted-foreground">Müşterisiz satışta cari hareketi yazılmaz.</p>
+          <p className="text-xs text-muted-foreground">Tedarikçisiz alışta cari hareketi yazılmaz.</p>
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="sale-warehouse">Depo</Label>
+          <Label htmlFor="purchase-warehouse">Depo</Label>
           <Controller
             control={control}
             name="warehouseId"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="sale-warehouse">
+                <SelectTrigger id="purchase-warehouse">
                   <SelectValue placeholder="Depo seçin" />
                 </SelectTrigger>
                 <SelectContent>
@@ -259,14 +259,14 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="sale-date">Belge Tarihi *</Label>
-          <Input id="sale-date" type="date" {...register("date")} />
+          <Label htmlFor="purchase-date">Belge Tarihi *</Label>
+          <Input id="purchase-date" type="date" {...register("date")} />
           {errors.date && <p className="text-sm text-destructive">{errors.date.message}</p>}
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="sale-due-date">Vade Tarihi</Label>
-          <Input id="sale-due-date" type="date" {...register("dueDate")} />
+          <Label htmlFor="purchase-due-date">Vade Tarihi</Label>
+          <Input id="purchase-due-date" type="date" {...register("dueDate")} />
           {errors.dueDate && <p className="text-sm text-destructive">{errors.dueDate.message}</p>}
         </div>
       </div>
@@ -308,7 +308,7 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
               <CardContent className="grid gap-3">
                 <div className="grid gap-3 md:grid-cols-12">
                   <div className="grid gap-2 md:col-span-4">
-                    <Label htmlFor={`item-product-${index}`} className="text-xs text-muted-foreground">
+                    <Label htmlFor={`pitem-product-${index}`} className="text-xs text-muted-foreground">
                       Ürün / Hizmet *
                     </Label>
                     <Controller
@@ -316,7 +316,7 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
                       name={`items.${index}.productId`}
                       render={({ field: itemField }) => (
                         <Select value={itemField.value || undefined} onValueChange={(value) => onProductChange(index, value)}>
-                          <SelectTrigger id={`item-product-${index}`} className="w-full">
+                          <SelectTrigger id={`pitem-product-${index}`} className="w-full">
                             <SelectValue placeholder="Ürün seçin" />
                           </SelectTrigger>
                           <SelectContent>
@@ -336,11 +336,11 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
                   </div>
 
                   <div className="grid gap-2 md:col-span-2">
-                    <Label htmlFor={`item-quantity-${index}`} className="text-xs text-muted-foreground">
+                    <Label htmlFor={`pitem-quantity-${index}`} className="text-xs text-muted-foreground">
                       Miktar *
                     </Label>
                     <Input
-                      id={`item-quantity-${index}`}
+                      id={`pitem-quantity-${index}`}
                       inputMode="decimal"
                       placeholder="1"
                       {...register(`items.${index}.quantity`)}
@@ -351,11 +351,11 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
                   </div>
 
                   <div className="grid gap-2 md:col-span-2">
-                    <Label htmlFor={`item-price-${index}`} className="text-xs text-muted-foreground">
-                      Birim Fiyat *
+                    <Label htmlFor={`pitem-price-${index}`} className="text-xs text-muted-foreground">
+                      Birim Alış Fiyatı *
                     </Label>
                     <Input
-                      id={`item-price-${index}`}
+                      id={`pitem-price-${index}`}
                       inputMode="decimal"
                       placeholder="0,00"
                       {...register(`items.${index}.unitPrice`)}
@@ -366,11 +366,11 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
                   </div>
 
                   <div className="grid gap-2 md:col-span-1">
-                    <Label htmlFor={`item-discount-${index}`} className="text-xs text-muted-foreground">
+                    <Label htmlFor={`pitem-discount-${index}`} className="text-xs text-muted-foreground">
                       İskonto %
                     </Label>
                     <Input
-                      id={`item-discount-${index}`}
+                      id={`pitem-discount-${index}`}
                       inputMode="decimal"
                       placeholder="0"
                       {...register(`items.${index}.discountRate`)}
@@ -381,11 +381,11 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
                   </div>
 
                   <div className="grid gap-2 md:col-span-1">
-                    <Label htmlFor={`item-vat-${index}`} className="text-xs text-muted-foreground">
+                    <Label htmlFor={`pitem-vat-${index}`} className="text-xs text-muted-foreground">
                       KDV %
                     </Label>
                     <Input
-                      id={`item-vat-${index}`}
+                      id={`pitem-vat-${index}`}
                       inputMode="decimal"
                       placeholder="20"
                       {...register(`items.${index}.vatRate`)}
@@ -414,7 +414,7 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
                     Satır tutarı: <span className="tabular-nums">{formatMoney(line.total)}</span>
                     {product?.isService ? (
                       <Badge variant="secondary" className="ml-2">
-                        Hizmet — stok düşmez
+                        Hizmet — stoğa girmez
                       </Badge>
                     ) : null}
                   </p>
@@ -427,11 +427,11 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="sale-description">Açıklama</Label>
+          <Label htmlFor="purchase-description">Açıklama</Label>
           <Textarea
-            id="sale-description"
+            id="purchase-description"
             rows={3}
-            placeholder="Belgeye not (sipariş no, teslim bilgisi...)"
+            placeholder="Belgeye not (fatura no, teslim bilgisi...)"
             {...register("description")}
           />
           {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
@@ -456,9 +456,9 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
               <span>Genel Toplam</span>
               <span className="tabular-nums">{formatMoney(totals.total)}</span>
             </div>
-            {isEdit && sale && (
+            {isEdit && purchase && (
               <p className="text-xs text-muted-foreground">
-                {sale.number} · {formatDate(sale.date)} — taslak düzenleniyor, onayda stok düşer.
+                {purchase.number} · {formatDate(purchase.date)} — taslak düzenleniyor, onayda stok girer.
               </p>
             )}
           </CardContent>
@@ -466,7 +466,7 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="outline" onClick={() => router.push("/sales")} disabled={isSubmitting}>
+        <Button type="button" variant="outline" onClick={() => router.push("/purchases")} disabled={isSubmitting}>
           Vazgeç
         </Button>
         <Button type="submit" disabled={isSubmitting}>

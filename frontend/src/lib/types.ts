@@ -141,6 +141,7 @@ export interface ProductSummaryDto {
   categoryName: string | null;
   unitName: string | null;
   salePrice: number;
+  purchasePrice: number;
   vatRate: number;
   currentStock: number;
   isCritical: boolean;
@@ -272,4 +273,69 @@ export interface SaleResponse {
   createdAtUtc: string;
   items: SaleItemDto[];
   payments: SalePaymentDto[];
+}
+
+// ---- Alış (PHASE 5)
+
+export type PurchaseStatusDto = "Draft" | "Confirmed" | "PartiallyPaid" | "Paid" | "Cancelled";
+
+export interface PurchaseItemDto {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  discountRate: number;
+  netAmount: number;
+  vatRate: number;
+  vatAmount: number;
+  lineTotal: number;
+}
+
+export interface PurchasePaymentDto {
+  id: string;
+  accountId: string;
+  accountName: string;
+  date: string;
+  amount: number;
+  description: string | null;
+  paidOnConfirm: boolean;
+  createdAtUtc: string;
+}
+
+export interface PurchaseSummaryDto {
+  id: string;
+  number: string;
+  date: string;
+  partyId: string | null;
+  partyName: string | null;
+  itemCount: number;
+  total: number;
+  paidAmount: number;
+  status: PurchaseStatusDto;
+}
+
+export interface PurchaseResponse {
+  id: string;
+  number: string;
+  partyId: string | null;
+  partyName: string | null;
+  warehouseId: string;
+  warehouseName: string;
+  date: string;
+  dueDate: string | null;
+  description: string | null;
+  subTotal: number;
+  discountTotal: number;
+  vatTotal: number;
+  total: number;
+  paidAmount: number;
+  dueAmount: number;
+  status: PurchaseStatusDto;
+  confirmedAtUtc: string | null;
+  cancelledAtUtc: string | null;
+  cancelReason: string | null;
+  createdAtUtc: string;
+  items: PurchaseItemDto[];
+  payments: PurchasePaymentDto[];
 }

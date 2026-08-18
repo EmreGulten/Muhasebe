@@ -27,7 +27,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, enabled: true },
   { label: "Satışlar", href: "/sales", icon: ShoppingCart, enabled: true },
-  { label: "Alışlar", href: "/purchases", icon: ReceiptText, enabled: false },
+  { label: "Alışlar", href: "/purchases", icon: ReceiptText, enabled: true },
   { label: "Müşteriler", href: "/customers", icon: Users, enabled: true },
   { label: "Tedarikçiler", href: "/suppliers", icon: Truck, enabled: true },
   { label: "Ürünler", href: "/products", icon: Package, enabled: true },
