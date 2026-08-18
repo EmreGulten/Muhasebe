@@ -41,6 +41,12 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRo
 
     public DbSet<AccountTransaction> AccountTransactions => Set<AccountTransaction>();
 
+    public DbSet<Purchase> Purchases => Set<Purchase>();
+
+    public DbSet<PurchaseItem> PurchaseItems => Set<PurchaseItem>();
+
+    public DbSet<PurchasePayment> PurchasePayments => Set<PurchasePayment>();
+
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();

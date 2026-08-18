@@ -38,6 +38,12 @@ public interface IApplicationDbContext
 
     DbSet<AccountTransaction> AccountTransactions { get; }
 
+    DbSet<Purchase> Purchases { get; }
+
+    DbSet<PurchaseItem> PurchaseItems { get; }
+
+    DbSet<PurchasePayment> PurchasePayments { get; }
+
     DbSet<RefreshToken> RefreshTokens { get; }
 
     DbSet<AuditLog> AuditLogs { get; }

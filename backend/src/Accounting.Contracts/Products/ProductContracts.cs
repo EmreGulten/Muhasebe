@@ -63,6 +63,7 @@ public sealed record ProductSummaryDto(
     string? CategoryName,
     string? UnitName,
     decimal SalePrice,
+    decimal PurchasePrice,
     decimal VatRate,
     decimal CurrentStock,
     bool IsCritical,

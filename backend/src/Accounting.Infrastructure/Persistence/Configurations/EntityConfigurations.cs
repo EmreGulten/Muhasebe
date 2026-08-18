@@ -429,3 +429,92 @@ public sealed class AccountTransactionConfiguration : IEntityTypeConfiguration<A
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+// ---- Alış (PHASE 5)
+
+/// <summary>Alış belgesi — satış konfigürasyonunun aynası.</summary>
+public sealed class PurchaseConfiguration : IEntityTypeConfiguration<Purchase>
+{
+    public void Configure(EntityTypeBuilder<Purchase> builder)
+    {
+        builder.ToTable("Purchases");
+
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Number).HasMaxLength(20);
+        builder.Property(p => p.Description).HasMaxLength(500);
+        builder.Property(p => p.CancelReason).HasMaxLength(300);
+        builder.Property(p => p.Status).HasConversion<int>();
+
+        builder.HasQueryFilter(p => !p.IsDeleted);
+
+        // Numara tenant içinde benzersiz (eşzamanlı seri atamasını DB düzeyinde korur).
+        builder.HasIndex(p => new { p.TenantId, p.Number }).IsUnique();
+
+        // Liste sorguları: durum + tarih, tedarikçi filtresi.
+        builder.HasIndex(p => new { p.TenantId, p.Status, p.Date });
+        builder.HasIndex(p => new { p.TenantId, p.PartyId });
+
+        builder.HasOne(p => p.Party)
+            .WithMany()
+            .HasForeignKey(p => p.PartyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(p => p.Warehouse)
+            .WithMany()
+            .HasForeignKey(p => p.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+/// <summary>Alış kalemi — belge ile birlikte yaşar, defter kaydı değildir.</summary>
+public sealed class PurchaseItemConfiguration : IEntityTypeConfiguration<PurchaseItem>
+{
+    public void Configure(EntityTypeBuilder<PurchaseItem> builder)
+    {
+        builder.ToTable("PurchaseItems");
+
+        builder.HasKey(i => i.Id);
+
+        builder.Property(i => i.ProductName).HasMaxLength(200);
+        builder.Property(i => i.Quantity).HasColumnType("numeric(18,4)");
+
+        builder.HasIndex(i => new { i.TenantId, i.ProductId });
+
+        builder.HasOne(i => i.Purchase)
+            .WithMany(p => p.Items)
+            .HasForeignKey(i => i.PurchaseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(i => i.Product)
+            .WithMany()
+            .HasForeignKey(i => i.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+/// <summary>Alış ödemesi — defter kaydı, silinmez.</summary>
+public sealed class PurchasePaymentConfiguration : IEntityTypeConfiguration<PurchasePayment>
+{
+    public void Configure(EntityTypeBuilder<PurchasePayment> builder)
+    {
+        builder.ToTable("PurchasePayments");
+
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Description).HasMaxLength(300);
+
+        builder.HasIndex(p => new { p.TenantId, p.PurchaseId });
+        builder.HasIndex(p => new { p.TenantId, p.AccountId, p.Date });
+
+        builder.HasOne(p => p.Purchase)
+            .WithMany(p => p.Payments)
+            .HasForeignKey(p => p.PurchaseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(p => p.Account)
+            .WithMany()
+            .HasForeignKey(p => p.AccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}

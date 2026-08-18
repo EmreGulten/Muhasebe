@@ -8,23 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Accounting.Application.Features.Sales;
 
-/// <summary>Satış kalemi hesaplamaları — yuvarlama kuralı tek yerde tanımlanır.</summary>
-internal static class SaleMath
-{
-    /// <summary>
-    /// Kalem tutarları: brüt = Round(miktar × fiyat, 2); net = Round(brüt × (1 − iskonto), 2);
-    /// KDV = Round(net × oran, 2). Tutarlar numeric(18,2).
-    /// </summary>
-    public static (decimal Net, decimal Vat) Line(
-        decimal quantity, decimal unitPrice, decimal discountRate, decimal vatRate)
-    {
-        var gross = decimal.Round(quantity * unitPrice, 2);
-        var net = decimal.Round(gross * (1 - discountRate / 100m), 2);
-        var vat = decimal.Round(net * vatRate / 100m, 2);
-        return (net, vat);
-    }
-}
-
 /// <summary>Satış özelliğinin paylaşılan sorgu yardımcıları.</summary>
 internal static class SaleQueries
 {
@@ -117,7 +100,7 @@ internal static class SaleQueries
                 throw new AppException("Satılamayan (pasif/yok) ürün içeren kalem var.");
             }
 
-            var (net, vat) = SaleMath.Line(request.Quantity, request.UnitPrice, request.DiscountRate, request.VatRate);
+            var (net, vat) = LineMath.Line(request.Quantity, request.UnitPrice, request.DiscountRate, request.VatRate);
             items.Add(new SaleItem
             {
                 TenantId = tenantId,
