@@ -3,8 +3,8 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4** kapsamını içerir: proje kurulumu, kimlik doğrulama,
-çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi ve satış belgeleri.
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri.
 
 ## Bu fazda çalışanlar
 
@@ -42,6 +42,17 @@ Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4** k
 - Onaylı belge değiştirilemez/silinemez (409); taslak serbestçe düzenlenir ya da silinir
 - Satış listesi: durum filtresi, belge no/müşteri araması, sayfalama; frontend'de belge formu
   (dinamik kalemler, canlı toplamlar), detay (onay/iptal/tahsilat diyaloğu)
+- Alış belgeleri: P-000001... numara serisi, tedarikçi (opsiyonel — nakit alış), depo, vade;
+  kalem hesapları satışla aynı LineMath ile yuvarlanır
+- Alış onayı: tek transaction'da stok girişi (hizmet kalemleri hariç) + tedarikçi borcu
+  (cariye alacak) + (istenirse) anlık ödeme; müşteri carisinden alış reddedilir
+- Ödemeler: kasa çıkışı (ilk ödemede "Kasa" hesabı oluşur) + cari borç; kısmi ödeme
+  (PartiallyPaid) → tam ödeme (Paid); kalan borcu aşan ödeme reddedilir
+- Alış iptali: stok geri düşer, tedarikçi borcu ve ödemelerin cari borcu ters işaretle kapanır,
+  kasa ödemeleri kasaya iade edilir; kayıtlar silinmez
+- Alış listesi: durum filtresi, belge no/tedarikçi araması, sayfalama; frontend'de belge formu
+  (ürün seçiminde alış fiyatı varsayılanı) ve detay (onay/iptal/ödeme diyaloğu)
+- Yetkiler: Çalışan satış yapar ama alış giremez; alış Muhasebeci/Owner yetkisindedir
 - Dashboard kabuğu: plan bölüm 27'deki gezinme, sonraki faz modülleri "Yakında" etiketiyle
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
@@ -69,7 +80,7 @@ backend/
   tests/Accounting.UnitTests/
 frontend/
   src/app/(auth)/                 # login, register, forgot/reset password
-  src/app/(app)/                  # korumalı alan: dashboard, business/new, customers, suppliers, products, settings
+  src/app/(app)/                  # korumalı alan: dashboard, business/new, customers, suppliers, products, sales, purchases, settings
   src/components/                 # app-shell, cari ve ürün/stok bileşenleri, tanımlar, ui/
   src/lib/                        # api istemcisi (401→sessiz refresh), tipler, cari/ürün yardımcıları, gezinme
 docker-compose.yml
@@ -160,7 +171,7 @@ dotnet test Accounting.slnx
 - [x] PHASE 2 — Cari hesaplar (müşteri/tedarikçi kartları, hareketler, bakiye, ekstre)
 - [x] PHASE 3 — Ürün + Stok (kategori, birim, depo, stok hareketi, kritik stok)
 - [x] PHASE 4 — Satışlar (belge, kalemler, onay, stok düşümü, tahsilat, iptal)
-- [ ] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
+- [x] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
 - [ ] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
 - [ ] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
 - [ ] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
