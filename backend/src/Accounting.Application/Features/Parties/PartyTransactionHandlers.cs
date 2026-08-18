@@ -89,8 +89,8 @@ public sealed class CreatePartyTransactionHandler(
             Type = type,
             Debit = amount > 0 ? amount : 0,
             Credit = amount < 0 ? -amount : 0,
-            Date = request.Date,
-            DueDate = request.DueDate,
+            Date = Dates.ToUtcDate(request.Date),
+            DueDate = request.DueDate is { } due ? Dates.ToUtcDate(due) : null,
             Description = request.Description.NullIfEmpty(),
             CreatedAtUtc = now,
         };

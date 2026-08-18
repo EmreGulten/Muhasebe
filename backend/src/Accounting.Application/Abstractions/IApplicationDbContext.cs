@@ -18,6 +18,16 @@ public interface IApplicationDbContext
 
     DbSet<PartyTransaction> PartyTransactions { get; }
 
+    DbSet<Category> Categories { get; }
+
+    DbSet<Unit> Units { get; }
+
+    DbSet<Warehouse> Warehouses { get; }
+
+    DbSet<Product> Products { get; }
+
+    DbSet<InventoryTransaction> InventoryTransactions { get; }
+
     DbSet<RefreshToken> RefreshTokens { get; }
 
     DbSet<AuditLog> AuditLogs { get; }

@@ -1,5 +1,6 @@
 using Accounting.Application.Abstractions;
 using Accounting.Application.Common;
+using Accounting.Contracts;
 using Accounting.Contracts.Parties;
 using Accounting.Domain.Entities;
 using Accounting.Domain.Enums;

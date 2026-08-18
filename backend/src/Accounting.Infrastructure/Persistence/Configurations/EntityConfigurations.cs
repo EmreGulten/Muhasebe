@@ -160,3 +160,140 @@ public sealed class PartyTransactionConfiguration : IEntityTypeConfiguration<Par
         builder.HasIndex(t => new { t.TenantId, t.ReferenceType, t.ReferenceId });
     }
 }
+
+public sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
+{
+    public void Configure(EntityTypeBuilder<Category> builder)
+    {
+        builder.ToTable("Categories");
+
+        builder.HasQueryFilter(c => !c.IsDeleted);
+
+        builder.HasKey(c => c.Id);
+
+        builder.Property(c => c.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        // Benzersizlik handler'da denetlenir: soft-delete satırları DB benzersiz
+        // indexini bloklardığı için burada yalnız sorgu dizini bırakılır.
+        builder.HasIndex(c => new { c.TenantId, c.Name });
+    }
+}
+
+public sealed class UnitConfiguration : IEntityTypeConfiguration<Unit>
+{
+    public void Configure(EntityTypeBuilder<Unit> builder)
+    {
+        builder.ToTable("Units");
+
+        builder.HasQueryFilter(u => !u.IsDeleted);
+
+        builder.HasKey(u => u.Id);
+
+        builder.Property(u => u.Name)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(u => u.Code).HasMaxLength(10);
+
+        builder.HasIndex(u => new { u.TenantId, u.Name });
+    }
+}
+
+public sealed class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
+{
+    public void Configure(EntityTypeBuilder<Warehouse> builder)
+    {
+        builder.ToTable("Warehouses");
+
+        builder.HasQueryFilter(w => !w.IsDeleted);
+
+        builder.HasKey(w => w.Id);
+
+        builder.Property(w => w.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(w => w.Address).HasMaxLength(300);
+
+        // Varsayılan depo çözümleme deseni.
+        builder.HasIndex(w => new { w.TenantId, w.IsDefault });
+    }
+}
+
+public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
+{
+    public void Configure(EntityTypeBuilder<Product> builder)
+    {
+        builder.ToTable("Products");
+
+        builder.HasQueryFilter(p => !p.IsDeleted);
+
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Name)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(p => p.Sku).HasMaxLength(50);
+        builder.Property(p => p.Barcode).HasMaxLength(50);
+        builder.Property(p => p.Description).HasMaxLength(500);
+
+        // KDV oranı yüzde: numeric(5,2); kritik eşik miktar alanıdır: numeric(18,4).
+        builder.Property(p => p.VatRate).HasColumnType("numeric(5,2)");
+        builder.Property(p => p.MinimumStock).HasColumnType("numeric(18,4)");
+
+        // SKU benzersizliği handler'da denetlenir (soft-delete ile index çakışması).
+        builder.HasIndex(p => new { p.TenantId, p.Name });
+        builder.HasIndex(p => new { p.TenantId, p.Sku });
+        builder.HasIndex(p => new { p.TenantId, p.IsActive });
+
+        builder.HasOne(p => p.Category)
+            .WithMany(c => c.Products)
+            .HasForeignKey(p => p.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict); // kullanan ürün varken kategori düşmez
+
+        builder.HasOne(p => p.Unit)
+            .WithMany(u => u.Products)
+            .HasForeignKey(p => p.UnitId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(p => p.InventoryTransactions)
+            .WithOne(t => t.Product)
+            .HasForeignKey(t => t.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+public sealed class InventoryTransactionConfiguration : IEntityTypeConfiguration<InventoryTransaction>
+{
+    public void Configure(EntityTypeBuilder<InventoryTransaction> builder)
+    {
+        builder.ToTable("InventoryTransactions");
+
+        builder.HasKey(t => t.Id);
+
+        builder.Property(t => t.Type).HasConversion<int>();
+
+        // İşaretli miktar: giriş pozitif, çıkış negatif — numeric(18,4).
+        builder.Property(t => t.Quantity).HasColumnType("numeric(18,4)");
+
+        builder.Property(t => t.Description).HasMaxLength(300);
+        builder.Property(t => t.ReferenceType).HasMaxLength(50);
+
+        // Hareket geçmişi sorgusu: tenant + ürün + tarih.
+        builder.HasIndex(t => new { t.TenantId, t.ProductId, t.Date });
+
+        // Depo bazlı stok toplamı.
+        builder.HasIndex(t => new { t.TenantId, t.WarehouseId });
+
+        // Üretici kayıt (satış/alış/transfer) üzerinden ters bulma.
+        builder.HasIndex(t => new { t.TenantId, t.ReferenceType, t.ReferenceId });
+
+        builder.HasOne(t => t.Warehouse)
+            .WithMany(w => w.Transactions)
+            .HasForeignKey(t => t.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}

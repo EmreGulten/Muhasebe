@@ -1,3 +1,5 @@
+using Accounting.Contracts;
+
 namespace Accounting.Contracts.Parties;
 
 /// <summary>
@@ -70,8 +72,6 @@ public sealed record PartyResponse(
     decimal TotalDebit,
     decimal TotalCredit,
     DateTime? LastTransactionDateUtc);
-
-public sealed record PagedResponse<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount);
 
 /// <summary>
 /// Manuel cari hareket girişi. Type: "OpeningBalance" | "Debit" | "Credit" | "Adjustment".

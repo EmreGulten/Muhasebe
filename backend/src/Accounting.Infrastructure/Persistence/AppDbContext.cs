@@ -21,6 +21,16 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRo
 
     public DbSet<PartyTransaction> PartyTransactions => Set<PartyTransaction>();
 
+    public DbSet<Category> Categories => Set<Category>();
+
+    public DbSet<Unit> Units => Set<Unit>();
+
+    public DbSet<Warehouse> Warehouses => Set<Warehouse>();
+
+    public DbSet<Product> Products => Set<Product>();
+
+    public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
+
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();

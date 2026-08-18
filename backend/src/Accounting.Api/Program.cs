@@ -133,6 +133,7 @@ var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
 api.MapAuthEndpoints();
 api.MapTenantEndpoints();
 api.MapPartyEndpoints();
+api.MapProductEndpoints();
 
 app.Run();
 
