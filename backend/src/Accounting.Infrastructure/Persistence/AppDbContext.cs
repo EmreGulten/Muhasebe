@@ -1,0 +1,54 @@
+using Accounting.Application.Abstractions;
+using Accounting.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+namespace Accounting.Infrastructure.Persistence;
+
+// .NET 10: Guid key için IdentityDbContext<TUser, TRole, TKey> kullanılır.
+public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Tenant> Tenants => Set<Tenant>();
+
+    public DbSet<UserTenant> UserTenants => Set<UserTenant>();
+
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        // Identity tabloları plandaki isimlendirmeyle hizalanır (muhasebe.md bölüm 20).
+        builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
+        builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
+        builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
+        builder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles");
+        builder.Entity<IdentityRole<Guid>>().ToTable("Roles");
+
+        builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        // Para alanları her zaman numeric(18,2); miktar alanları numeric(18,4) —
+        // float/double asla kullanılmaz (muhasebe.md bölüm 21).
+        if (Database.IsNpgsql())
+        {
+            foreach (var entity in builder.Model.GetEntityTypes())
+            {
+                foreach (var property in entity.GetProperties())
+                {
+                    if (property.ClrType == typeof(decimal) &&
+                        property.GetColumnType() is null)
+                    {
+                        property.SetColumnType("numeric(18,2)");
+                    }
+                }
+            }
+        }
+    }
+}
