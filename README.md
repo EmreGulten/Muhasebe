@@ -3,8 +3,8 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1** kapsamını içerir: proje kurulumu, kimlik doğrulama
-ve çok kiracılı (multi-tenant) işletme sistemi.
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+çok kiracılı (multi-tenant) işletme sistemi ve cari hesaplar (müşteri/tedarikçi).
 
 ## Bu fazda çalışanlar
 
@@ -12,7 +12,13 @@ ve çok kiracılı (multi-tenant) işletme sistemi.
 - Giriş / çıkış, JWT access token + httpOnly cookie'de dönen refresh token (rotasyon + yeniden kullanım tespiti)
 - Parola sıfırlama akışı (geliştirmede kod log'a yazılır)
 - İşletme (tenant) oluşturma, listeleme, aktif işletme seçimi (`X-Tenant-Id`)
-- Roller ve izin altyapısı (Owner / Muhasebeci / Çalışan)
+- Roller ve izin altyapısı (Owner / Muhasebeci / Çalışan); uç nokta bazlı `perm:<izin>` politikaları
+- Cari kartları: müşteri/tedarikçi/ikisi oluşturma, düzenleme, pasifleştirme, silme (hareketi varsa reddedilir)
+- Açılış bakiyesi: kartla atomik tek seferlik hareket (pozitif = taraf bize borçlu)
+- Manuel cari hareketleri (borçlandırma/alacaklandırma/düzeltme/açılış); satış/tahsilat/alış/ödeme
+  hareketleri ilgili modüllerden oluşur
+- Bakiye = Σborç − Σalacak; cari ekstresi: tarih sıralı hareketler, çalışan bakiye, sayfalama
+- Müşteri/Tedarikçi listeleri: arama, tür filtresi, pasifleri göster, sayfalama
 - Dashboard kabuğu: plan bölüm 27'deki gezinme, sonraki faz modülleri "Yakında" etiketiyle
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
@@ -40,9 +46,9 @@ backend/
   tests/Accounting.UnitTests/
 frontend/
   src/app/(auth)/                 # login, register, forgot/reset password
-  src/app/(app)/                  # korumalı alan: dashboard, business/new
-  src/components/                 # app-shell (sidebar + tenant/user menüleri), ui/
-  src/lib/                        # api istemcisi (401→sessiz refresh), tipler, gezinme
+  src/app/(app)/                  # korumalı alan: dashboard, business/new, customers, suppliers
+  src/components/                 # app-shell, cari bileşenleri (liste/kart/ekstre/formlar), ui/
+  src/lib/                        # api istemcisi (401→sessiz refresh), tipler, cari yardımcıları, gezinme
 docker-compose.yml
 .env.example
 ```
@@ -128,8 +134,12 @@ dotnet test Accounting.slnx
 
 - [x] PHASE 0 — kurulum, Docker, CI iskeleti
 - [x] PHASE 1 — Authentication + Tenant
-- [ ] PHASE 2 — Cari kartlar (müşteri/tedarikçi) ve ürünler
-- [ ] PHASE 3 — Satış ve alış belgeleri
-- [ ] PHASE 4 — Kasa/banka ve gelir-gider
-- [ ] PHASE 5 — Raporlar ve KDV/beyan desteği
-- [ ] PHASE 6 — AI asistan (fatura okuma, kategorileme, özetler)
+- [x] PHASE 2 — Cari hesaplar (müşteri/tedarikçi kartları, hareketler, bakiye, ekstre)
+- [ ] PHASE 3 — Ürün + Stok (kategori, birim, depo, stok hareketi, kritik stok)
+- [ ] PHASE 4 — Satışlar (belge, kalemler, onay, stok düşümü, tahsilat, iptal)
+- [ ] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
+- [ ] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
+- [ ] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
+- [ ] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
+- [ ] PHASE 9 — AI Asistan (fatura okuma, iş sorguları; doğrudan SQL çalıştırmaz)
+- [ ] PHASE 10 — Abonelik (planlar, deneme, ödeme entegrasyonu)
