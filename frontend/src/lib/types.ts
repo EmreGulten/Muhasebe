@@ -109,3 +109,101 @@ export interface PartyStatementResponse {
   totalCount: number;
   items: PartyTransactionDto[];
 }
+
+// ---- Ürün / Stok (PHASE 3)
+
+export interface CategoryDto {
+  id: string;
+  name: string;
+  productCount: number;
+}
+
+export interface UnitDto {
+  id: string;
+  name: string;
+  code: string | null;
+  productCount: number;
+}
+
+export interface WarehouseDto {
+  id: string;
+  name: string;
+  address: string | null;
+  isDefault: boolean;
+  isActive: boolean;
+}
+
+export interface ProductSummaryDto {
+  id: string;
+  name: string;
+  sku: string | null;
+  barcode: string | null;
+  categoryName: string | null;
+  unitName: string | null;
+  salePrice: number;
+  currentStock: number;
+  isCritical: boolean;
+  isService: boolean;
+  isActive: boolean;
+}
+
+export interface ProductResponse {
+  id: string;
+  name: string;
+  sku: string | null;
+  barcode: string | null;
+  description: string | null;
+  categoryId: string | null;
+  categoryName: string | null;
+  unitId: string | null;
+  unitName: string | null;
+  purchasePrice: number;
+  salePrice: number;
+  vatRate: number;
+  minimumStock: number;
+  isService: boolean;
+  isActive: boolean;
+  createdAtUtc: string;
+  updatedAtUtc: string | null;
+  currentStock: number;
+  isCritical: boolean;
+}
+
+export interface WarehouseStockDto {
+  warehouseId: string;
+  warehouseName: string;
+  stock: number;
+}
+
+export interface ProductStockResponse {
+  productId: string;
+  productName: string;
+  totalStock: number;
+  warehouses: WarehouseStockDto[];
+}
+
+export type ManualInventoryTypeDto = "Count" | "ManualIn" | "ManualOut" | "Return";
+
+export interface InventoryTransactionDto {
+  id: string;
+  productId: string;
+  productName: string;
+  warehouseId: string;
+  warehouseName: string;
+  type: string;
+  date: string;
+  quantity: number;
+  description: string | null;
+  referenceType: string | null;
+  referenceId: string | null;
+  createdAtUtc: string;
+}
+
+export interface CriticalStockItemDto {
+  productId: string;
+  name: string;
+  sku: string | null;
+  currentStock: number;
+  minimumStock: number;
+  unitName: string | null;
+}
