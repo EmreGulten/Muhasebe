@@ -3,8 +3,8 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5** kapsamını içerir: proje kurulumu, kimlik doğrulama,
-çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri.
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri, kasa/banka hesapları.
 
 ## Bu fazda çalışanlar
 
@@ -53,6 +53,20 @@ Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + P
 - Alış listesi: durum filtresi, belge no/tedarikçi araması, sayfalama; frontend'de belge formu
   (ürün seçiminde alış fiyatı varsayılanı) ve detay (onay/iptal/ödeme diyaloğu)
 - Yetkiler: Çalışan satış yapar ama alış giremez; alış Muhasebeci/Owner yetkisindedir
+- Kasa/banka hesapları: Kasa / Banka / Kredi Kartı / Sanal POS türleri, para birimi (MVP: TRY),
+  açılış bakiyesi (pozitifse tek seferlik açılış hareketi deftere girer)
+- Bakiye = Σişaretli hareketler (giriş pozitif, çıkış negatif) — tek gerçek kaynak hareket tablosudur;
+  satış tahsilatları ve alış ödemeleri varsayılan "Kasa" hesabına akar (lazy oluşur)
+- Manuel hareketler: giriş (tahsilat) / çıkış (ödeme); hareketler değiştirilemez, düzeltme ters
+  hareketle yapılır (bölüm 23)
+- Hesaplar arası transfer: tek işlemde zıt işaretli çıkış + giriş çifti, paylaşılan ReferenceId ile
+  bağlı; aynı hesaba transfer reddedilir
+- Hesap ekstresi: tarih sırası hareketler, çalışan bakiye, sayfa öncesi toplam, sayfalama
+- Koruma kuralları: varsayılan kasa pasifleştirilemez/silinemez (satış/alış ödemelerinin hedefi),
+  hareketli hesap silinemez (pasifleştirin), pasif hesaba hareket yazılamaz
+- Yetkiler: Çalışan yalnızca hesapları görüntüler; hesap yönetimi Muhasebeci/Owner yetkisindedir
+- Frontend: hesap kart listesi (toplam bakiye), hesap detayı + ekstre, yeni hesap / hareket /
+  transfer / düzenleme / silme diyalogları
 - Dashboard kabuğu: plan bölüm 27'deki gezinme, sonraki faz modülleri "Yakında" etiketiyle
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
@@ -172,7 +186,7 @@ dotnet test Accounting.slnx
 - [x] PHASE 3 — Ürün + Stok (kategori, birim, depo, stok hareketi, kritik stok)
 - [x] PHASE 4 — Satışlar (belge, kalemler, onay, stok düşümü, tahsilat, iptal)
 - [x] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
-- [ ] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
+- [x] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
 - [ ] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
 - [ ] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
 - [ ] PHASE 9 — AI Asistan (fatura okuma, iş sorguları; doğrudan SQL çalıştırmaz)
