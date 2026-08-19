@@ -3,8 +3,9 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6** kapsamını içerir: proje kurulumu, kimlik doğrulama,
-çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri, kasa/banka hesapları.
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6 + PHASE 7** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri, kasa/banka hesapları,
+gelir/gider yönetimi.
 
 ## Bu fazda çalışanlar
 
@@ -65,6 +66,17 @@ Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + P
 - Koruma kuralları: varsayılan kasa pasifleştirilemez/silinemez (satış/alış ödemelerinin hedefi),
   hareketli hesap silinemez (pasifleştirin), pasif hesaba hareket yazılamaz
 - Yetkiler: Çalışan yalnızca hesapları görüntüler; hesap yönetimi Muhasebeci/Owner yetkisindedir
+- Gelir/gider kategorileri: plandaki 13 gider + 4 gelir varsayılanı eksiksiz tamamlanır (kullanıcının
+  sildiği geri gelmez); ad tenant ve tür içinde benzersiz, "Diğer" iki tarafta yaşar
+- Kategori yönetimi: ekleme, ad/aktiflik düzenleme (tür sabit); kaydı olan kategori silinemez
+- Gelir/gider kaydı: kategori + tutar + tarih + kasa/banka hesabı (verilmezse varsayılan "Kasa" lazy
+  oluşur) + açıklama + belge no; kayıt ve hesap hareketi tek transaction'da yazılır (gelir +, gider −)
+- Kayıtlar değiştirilemez/silinmez; iptal kasa hareketinin tersini yazar ve terminal durumdur (bölüm 23);
+  kategori türü kayıt türüyle uyuşmalıdır
+- Kayıt listesi: tür, kategori ve dönem filtreleri, sayfalama; iptal edilenler soluk + İptal etiketiyle
+- Dönem özeti (bölüm 25 MVP): toplam gelir/gider/net kartları, aylık döküm (boş aylar sıfırla) ve
+  kategori bazlı toplamlar; iptal edilenler özete girmez
+- Yetkiler: Çalışan yalnızca görüntüler; gelir/gider girişi Muhasebeci/Owner yetkisindedir
 - Frontend: hesap kart listesi (toplam bakiye), hesap detayı + ekstre, yeni hesap / hareket /
   transfer / düzenleme / silme diyalogları
 - Dashboard kabuğu: plan bölüm 27'deki gezinme, sonraki faz modülleri "Yakında" etiketiyle
@@ -187,7 +199,7 @@ dotnet test Accounting.slnx
 - [x] PHASE 4 — Satışlar (belge, kalemler, onay, stok düşümü, tahsilat, iptal)
 - [x] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
 - [x] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
-- [ ] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
+- [x] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
 - [ ] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
 - [ ] PHASE 9 — AI Asistan (fatura okuma, iş sorguları; doğrudan SQL çalıştırmaz)
 - [ ] PHASE 10 — Abonelik (planlar, deneme, ödeme entegrasyonu)
