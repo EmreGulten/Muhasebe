@@ -363,7 +363,7 @@ public sealed class ListSalesHandler(IApplicationDbContext db, ICurrentTenant cu
     }
 }
 
-/// <summary>Kasa yardımcıları — PHASE 4'te default hesap; yönetimi PHASE 6'da açılır.</summary>
+/// <summary>Kasa yardımcıları — satış/alış ödemeleri için lazy default hesap.</summary>
 internal static class SaleAccounts
 {
     public const string DefaultAccountName = "Kasa";
@@ -388,6 +388,8 @@ internal static class SaleAccounts
         {
             TenantId = tenantId,
             Name = DefaultAccountName,
+            Type = AccountType.Cash,
+            Currency = "TRY",
             IsDefault = true,
             CreatedAtUtc = timeProvider.GetUtcNow().UtcDateTime,
         };

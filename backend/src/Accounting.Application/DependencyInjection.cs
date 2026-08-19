@@ -1,4 +1,5 @@
 using Accounting.Application.Abstractions;
+using Accounting.Application.Features.Accounts;
 using Accounting.Application.Features.Auth;
 using Accounting.Application.Features.Parties;
 using Accounting.Application.Features.Products;
@@ -86,6 +87,16 @@ public static class DependencyInjection
         services.AddScoped<ConfirmPurchaseHandler>();
         services.AddScoped<CancelPurchaseHandler>();
         services.AddScoped<AddPurchasePaymentHandler>();
+
+        // Kasa / banka
+        services.AddScoped<ListAccountsHandler>();
+        services.AddScoped<GetAccountHandler>();
+        services.AddScoped<CreateAccountHandler>();
+        services.AddScoped<UpdateAccountHandler>();
+        services.AddScoped<DeleteAccountHandler>();
+        services.AddScoped<GetAccountStatementHandler>();
+        services.AddScoped<CreateAccountTransactionHandler>();
+        services.AddScoped<CreateTransferHandler>();
 
         services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 

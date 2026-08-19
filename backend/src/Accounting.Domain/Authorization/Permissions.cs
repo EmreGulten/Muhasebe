@@ -88,6 +88,7 @@ public static class RolePermissions
             [TenantRole.Accountant] = new HashSet<string>(
                 ViewOnly.Concat([Permissions.ExpensesCreate, Permissions.ExpensesEdit,
                     Permissions.PurchasesCreate, Permissions.PurchasesEdit,
+                    Permissions.AccountsCreate, Permissions.AccountsEdit,
                     Permissions.AiAssistantUse]), StringComparer.Ordinal),
 
             // Employee: operasyonel akış — satış, cari, stok girişi.

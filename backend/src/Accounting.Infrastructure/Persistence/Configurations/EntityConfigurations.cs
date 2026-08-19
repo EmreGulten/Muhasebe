@@ -397,6 +397,9 @@ public sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
         builder.HasKey(a => a.Id);
 
         builder.Property(a => a.Name).HasMaxLength(100);
+        builder.Property(a => a.Type).HasConversion<int>();
+        builder.Property(a => a.Currency).HasMaxLength(3);
+        builder.Property(a => a.OpeningBalance).HasPrecision(18, 2);
 
         builder.HasQueryFilter(a => !a.IsDeleted);
 
