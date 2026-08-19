@@ -1,5 +1,6 @@
 using Accounting.Application.Abstractions;
 using Accounting.Application.Features.Accounts;
+using Accounting.Application.Features.IncomeExpenses;
 using Accounting.Application.Features.Auth;
 using Accounting.Application.Features.Parties;
 using Accounting.Application.Features.Products;
@@ -97,6 +98,17 @@ public static class DependencyInjection
         services.AddScoped<GetAccountStatementHandler>();
         services.AddScoped<CreateAccountTransactionHandler>();
         services.AddScoped<CreateTransferHandler>();
+
+        // Gelir / gider
+        services.AddScoped<ListIncomeExpenseCategoriesHandler>();
+        services.AddScoped<CreateIncomeExpenseCategoryHandler>();
+        services.AddScoped<UpdateIncomeExpenseCategoryHandler>();
+        services.AddScoped<DeleteIncomeExpenseCategoryHandler>();
+        services.AddScoped<CreateIncomeExpenseRecordHandler>();
+        services.AddScoped<ListIncomeExpenseRecordsHandler>();
+        services.AddScoped<GetIncomeExpenseRecordHandler>();
+        services.AddScoped<CancelIncomeExpenseRecordHandler>();
+        services.AddScoped<GetIncomeExpenseSummaryHandler>();
 
         services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 

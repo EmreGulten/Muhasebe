@@ -46,6 +46,9 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRo
     public DbSet<PurchaseItem> PurchaseItems => Set<PurchaseItem>();
 
     public DbSet<PurchasePayment> PurchasePayments => Set<PurchasePayment>();
+    public DbSet<IncomeExpenseCategory> IncomeExpenseCategories => Set<IncomeExpenseCategory>();
+
+    public DbSet<IncomeExpenseRecord> IncomeExpenseRecords => Set<IncomeExpenseRecord>();
 
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 

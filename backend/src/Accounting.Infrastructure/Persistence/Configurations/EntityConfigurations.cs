@@ -521,3 +521,60 @@ public sealed class PurchasePaymentConfiguration : IEntityTypeConfiguration<Purc
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+// ---- Gelir / gider (PHASE 7)
+
+/// <summary>Gelir/gider kategorisi — ad tenant ve tür içinde benzersizdir.</summary>
+public sealed class IncomeExpenseCategoryConfiguration : IEntityTypeConfiguration<IncomeExpenseCategory>
+{
+    public void Configure(EntityTypeBuilder<IncomeExpenseCategory> builder)
+    {
+        builder.ToTable("IncomeExpenseCategories");
+
+        builder.HasQueryFilter(c => !c.IsDeleted);
+
+        builder.HasKey(c => c.Id);
+
+        builder.Property(c => c.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(c => c.Type).HasConversion<int>();
+
+        // Benzersizlik handler'da denetlenir (soft-delete satırları DB
+        // benzersizliğini bloklardığı için burada sorgu dizini kalır).
+        builder.HasIndex(c => new { c.TenantId, c.Type, c.Name });
+    }
+}
+
+/// <summary>Gelir/gider kaydı — değiştirilemez defter satırı, numeric(18,2).</summary>
+public sealed class IncomeExpenseRecordConfiguration : IEntityTypeConfiguration<IncomeExpenseRecord>
+{
+    public void Configure(EntityTypeBuilder<IncomeExpenseRecord> builder)
+    {
+        builder.ToTable("IncomeExpenseRecords");
+
+        builder.HasKey(r => r.Id);
+
+        builder.Property(r => r.Type).HasConversion<int>();
+        builder.Property(r => r.Status).HasConversion<int>();
+        builder.Property(r => r.Amount).HasPrecision(18, 2);
+        builder.Property(r => r.Description).HasMaxLength(300);
+        builder.Property(r => r.DocumentNumber).HasMaxLength(50);
+        builder.Property(r => r.AttachmentUrl).HasMaxLength(500);
+
+        // Liste filtreleri: dönem + tür; kategori bazlı döküm.
+        builder.HasIndex(r => new { r.TenantId, r.Date });
+        builder.HasIndex(r => new { r.TenantId, r.CategoryId });
+
+        builder.HasOne(r => r.Category)
+            .WithMany(c => c.Records)
+            .HasForeignKey(r => r.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(r => r.PaymentAccount)
+            .WithMany()
+            .HasForeignKey(r => r.PaymentAccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}

@@ -43,6 +43,9 @@ public interface IApplicationDbContext
     DbSet<PurchaseItem> PurchaseItems { get; }
 
     DbSet<PurchasePayment> PurchasePayments { get; }
+    DbSet<IncomeExpenseCategory> IncomeExpenseCategories { get; }
+
+    DbSet<IncomeExpenseRecord> IncomeExpenseRecords { get; }
 
     DbSet<RefreshToken> RefreshTokens { get; }
 
