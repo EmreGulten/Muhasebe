@@ -561,3 +561,17 @@ export interface SalesReportResponse {
   byCustomer: SalesByCustomerDto[];
   byProduct: SalesByProductDto[];
 }
+
+// ---- AI Asistan (PHASE 9, bölüm 11)
+
+export interface AskAssistantResponse {
+  answer: string;
+  provider: string;
+}
+
+export interface AiMessageDto {
+  id: string;
+  role: string;
+  content: string;
+  createdAtUtc: string;
+}
