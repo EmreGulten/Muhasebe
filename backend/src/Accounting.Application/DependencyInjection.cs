@@ -7,6 +7,7 @@ using Accounting.Application.Features.Products;
 using Accounting.Application.Features.Sales;
 using Accounting.Application.Features.Purchases;
 using Accounting.Application.Features.Reports;
+using Accounting.Application.Features.Assistant;
 using Accounting.Application.Features.Tenants;
 using Accounting.Application.Services;
 using Accounting.Application.Validators;
@@ -116,6 +117,18 @@ public static class DependencyInjection
         services.AddScoped<GetReceivablesReportHandler>();
         services.AddScoped<GetStockReportHandler>();
         services.AddScoped<GetSalesReportHandler>();
+
+        // AI asistan (bölüm 11): onaylı iş araçları + sohbet.
+        services.AddScoped<IAiTool, GetMonthlyProfitTool>();
+        services.AddScoped<IAiTool, GetOverdueReceivablesTool>();
+        services.AddScoped<IAiTool, GetTopProductsTool>();
+        services.AddScoped<IAiTool, GetLowStockProductsTool>();
+        services.AddScoped<IAiTool, GetCustomerBalanceTool>();
+        services.AddScoped<IAiTool, GetExpenseBreakdownTool>();
+        services.AddScoped<IAiTool, CompareMonthsTool>();
+        services.AddScoped<IAiTool, GetUpcomingPaymentsTool>();
+        services.AddScoped<AskAssistantHandler>();
+        services.AddScoped<ListAssistantHistoryHandler>();
 
         services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 

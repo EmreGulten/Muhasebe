@@ -1,6 +1,7 @@
 using Accounting.Application;
 using Accounting.Application.Abstractions;
 using Accounting.Domain.Entities;
+using Accounting.Infrastructure.Ai;
 using Accounting.Infrastructure.Identity;
 using Accounting.Infrastructure.MultiTenancy;
 using Accounting.Infrastructure.Persistence;
@@ -68,6 +69,11 @@ public sealed class TestApp : IDisposable
             AccessTokenLifetimeMinutes = 5,
             RefreshTokenLifetimeDays = 7,
         }));
+
+        // AI asistan: testlerde daima offline sağlayıcı (dış ağa istek çıkmaz),
+        // varsayılan ayarlarla (ApiKey boş, aylık limit 100).
+        services.AddSingleton<IOptions<AiOptions>>(_ => Options.Create(new AiOptions()));
+        services.AddSingleton<IAiProvider, OfflineAiProvider>();
 
         Services = services.BuildServiceProvider();
 

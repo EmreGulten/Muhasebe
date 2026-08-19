@@ -47,6 +47,8 @@ public interface IApplicationDbContext
 
     DbSet<IncomeExpenseRecord> IncomeExpenseRecords { get; }
 
+    DbSet<AiMessage> AiMessages { get; }
+
     DbSet<RefreshToken> RefreshTokens { get; }
 
     DbSet<AuditLog> AuditLogs { get; }

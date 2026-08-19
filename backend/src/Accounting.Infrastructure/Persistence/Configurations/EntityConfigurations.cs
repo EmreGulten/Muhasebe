@@ -578,3 +578,21 @@ public sealed class IncomeExpenseRecordConfiguration : IEntityTypeConfiguration<
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+/// <summary>AI asistan sohbet mesajları (bölüm 11, PHASE 9).</summary>
+public sealed class AiMessageConfiguration : IEntityTypeConfiguration<AiMessage>
+{
+    public void Configure(EntityTypeBuilder<AiMessage> builder)
+    {
+        builder.ToTable("AiMessages");
+
+        builder.HasKey(m => m.Id);
+
+        builder.Property(m => m.Role).HasConversion<int>();
+        builder.Property(m => m.Content).HasMaxLength(4000).IsRequired();
+
+        // Sohbet geçmişi ve aylık kullanım limiti sayımı.
+        builder.HasIndex(m => new { m.TenantId, m.UserId, m.CreatedAtUtc });
+        builder.HasIndex(m => new { m.TenantId, m.Role, m.CreatedAtUtc });
+    }
+}

@@ -50,6 +50,8 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRo
 
     public DbSet<IncomeExpenseRecord> IncomeExpenseRecords => Set<IncomeExpenseRecord>();
 
+    public DbSet<AiMessage> AiMessages => Set<AiMessage>();
+
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();

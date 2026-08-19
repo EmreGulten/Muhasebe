@@ -139,6 +139,7 @@ api.MapPurchaseEndpoints();
 api.MapAccountEndpoints();
 api.MapIncomeExpenseEndpoints();
 api.MapReportEndpoints();
+api.MapAssistantEndpoints();
 
 app.Run();
 

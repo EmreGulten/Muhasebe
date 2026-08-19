@@ -1,5 +1,7 @@
+using System.Net.Http.Headers;
 using Accounting.Application.Abstractions;
 using Accounting.Domain.Entities;
+using Accounting.Infrastructure.Ai;
 using Accounting.Infrastructure.Identity;
 using Accounting.Infrastructure.MultiTenancy;
 using Accounting.Infrastructure.Persistence;
@@ -57,6 +59,29 @@ public static class DependencyInjection
 
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IEmailSender, DevEmailSender>();
+
+        // ---- AI asistan (muhasebe.md bölüm 11, 16): sağlayıcı soyutlaması.
+        // ApiKey tanımlıysa OpenAI uyumlu sağlayıcı, yoksa offline asistan —
+        // ikisi de yalnızca onaylı iş araçları üzerinden çalışır.
+        services.Configure<AiOptions>(configuration.GetSection(AiOptions.SectionName));
+        services.AddHttpClient("ai", client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(60);
+        });
+        services.AddSingleton<IAiProvider>(sp =>
+        {
+            var options = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AiOptions>>().Value;
+            if (string.IsNullOrWhiteSpace(options.ApiKey))
+            {
+                return new OfflineAiProvider();
+            }
+
+            var client = sp.GetRequiredService<IHttpClientFactory>().CreateClient("ai");
+            client.BaseAddress = new Uri(options.BaseUrl.TrimEnd('/') + "/");
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", options.ApiKey);
+            return new OpenAiProvider(client, options);
+        });
 
         services
             .AddHealthChecks()
