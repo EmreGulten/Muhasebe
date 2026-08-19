@@ -3,9 +3,9 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6 + PHASE 7** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6 + PHASE 7 + PHASE 8** kapsamını içerir: proje kurulumu, kimlik doğrulama,
 çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri, kasa/banka hesapları,
-gelir/gider yönetimi.
+gelir/gider yönetimi, dashboard ve raporlar.
 
 ## Bu fazda çalışanlar
 
@@ -79,7 +79,18 @@ gelir/gider yönetimi.
 - Yetkiler: Çalışan yalnızca görüntüler; gelir/gider girişi Muhasebeci/Owner yetkisindedir
 - Frontend: hesap kart listesi (toplam bakiye), hesap detayı + ekstre, yeni hesap / hareket /
   transfer / düzenleme / silme diyalogları
-- Dashboard kabuğu: plan bölüm 27'deki gezinme, sonraki faz modülleri "Yakında" etiketiyle
+- Dashboard (bölüm 3.1): 10 KPI kartı — günlük satış, aylık ciro ve gider, tahmini net kazanç,
+  toplam alacak/borç, kasa ve banka toplamları, kritik stok ile gecikmiş alacak sayıları
+- Dashboard grafikleri (CSS ile, kütüphanesiz): son 30 gün gelir/gider akışı, son 12 ay ciro,
+  en çok satan / en kârlı 5 ürün, en yüksek borçlu 5 müşteri
+- Alacaklar raporu (bölüm 25): pozitif bakiyeli müşteriler; gecikmiş tutar vadesi geçmiş
+  ödenmemiş onaylı satışlardan müşteri bazlı hesaplanır
+- Stok raporu: stoklu ürünlerin (pasifler dahil, hizmetler hariç) eldeki miktarı, maliyet değeri
+  (eldeki × alış fiyatı) ve kritik stok durumu
+- Satış raporu: dönem toplamları (adet / tutar / KDV / ortalama) ve gün / müşteri / ürün bazlı
+  döküm; taslak ve iptal edilen belgeler hiçbir rapora girmez
+- Yetkiler: raporlar salt okunur — tüm roller görüntüler (Reports.View)
+- Frontend: gerçek veriyle dashboard; /reports sayfası (alacaklar, stok, satış raporu)
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
 ## Teknolojiler
@@ -200,6 +211,6 @@ dotnet test Accounting.slnx
 - [x] PHASE 5 — Alışlar (belge, stok artışı, tedarikçi borcu, ödeme)
 - [x] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
 - [x] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
-- [ ] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
+- [x] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
 - [ ] PHASE 9 — AI Asistan (fatura okuma, iş sorguları; doğrudan SQL çalıştırmaz)
 - [ ] PHASE 10 — Abonelik (planlar, deneme, ödeme entegrasyonu)
