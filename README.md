@@ -3,9 +3,9 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6 + PHASE 7 + PHASE 8** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6 + PHASE 7 + PHASE 8 + PHASE 9** kapsamını içerir: proje kurulumu, kimlik doğrulama,
 çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri, kasa/banka hesapları,
-gelir/gider yönetimi, dashboard ve raporlar.
+gelir/gider yönetimi, dashboard ve raporlar, doğal dilde iş sorguları yapan AI asistan.
 
 ## Bu fazda çalışanlar
 
@@ -91,6 +91,22 @@ gelir/gider yönetimi, dashboard ve raporlar.
   döküm; taslak ve iptal edilen belgeler hiçbir rapora girmez
 - Yetkiler: raporlar salt okunur — tüm roller görüntüler (Reports.View)
 - Frontend: gerçek veriyle dashboard; /reports sayfası (alacaklar, stok, satış raporu)
+- AI asistan (bölüm 11): doğal dilde iş soruları — "Bu ay ne kadar kazandım?", "Bana borcu olan
+  müşterileri göster" gibi. AI **hiçbir koşulda SQL üretip çalıştırmaz**; akış plan bölüm 11.1'deki
+  gibidir: Soru → Niyet → Onaylı İş Aracı → Sorgu → Yapılandırılmış Veri → Açıklama
+- Onaylı iş araçları (8 adet, hepsi salt okunur ve `TenantId` filtreli): aylık kâr, gecikmiş
+  alacaklar, en çok satan ürünler, kritik stok, müşteri bakiyesi (adla arama), gider kategori
+  dökümü, ay kıyası, yaklaşan tedarikçi ödemeleri; bilinmeyen araç çağrıları reddedilir
+- Sağlayıcı soyutlaması (`IAiProvider`): `Ai__ApiKey` tanımlıysa OpenAI uyumlu API (çok turlu
+  tool calling), tanımsızsa **offline asistan** — dış ağa istek çıkmaz, anahtar kelime eşleştirme
+  ile aynı araçlar gerçek veriyle yanıtlanır
+- Sohbet geçmişi: soru + yanıt çiftleri işletme ve kullanıcı bazında saklanır; son 10 mesaj bağlam
+  olarak sağlayıcıya verilir
+- Kullanım limiti: işletme başına aylık soru sayısı (`Ai__MonthlyQuestionLimit`, varsayılan 100);
+  aşımında 429
+- Yetkiler: asistan yalnızca Owner / Admin / Muhasebeci'de (`AiAssistant.Use`)
+- Frontend: /assistant sohbet arayüzü — baloncuklu geçmiş, örnek soru çipleri, sağlayıcı rozeti,
+  çevrimdışı mod belirtileri
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
 ## Teknolojiler
@@ -189,6 +205,9 @@ dotnet test Accounting.slnx
 | `JWT_ISSUER`, `JWT_AUDIENCE` | Token talep değerleri |
 | `API_PORT`, `WEB_PORT` | Compose'ta yayınlanan portlar (varsayılan 5000 / 3000) |
 | `API_PROXY_URL` | Next.js rewrite proxy'sinin API adresi (Compose içinde `http://api:8080`) |
+| `AI_API_KEY` | AI asistan sağlayıcı anahtarı (OpenAI uyumlu). **Boş bırakılırsa asistan offline moda geçer** — dış ağa istek çıkmaz |
+| `AI_BASE_URL`, `AI_MODEL` | Sağlayıcı adresi ve modeli (varsayılan `https://api.openai.com/v1` / `gpt-4o-mini`) |
+| `AI_MONTHLY_QUESTION_LIMIT` | İşletme başına aylık soru limiti (varsayılan 100) |
 | `ApplyMigrations` | `true` ise açılışta migration'lar uygulanır |
 
 ## Güvenlik notları
@@ -212,5 +231,5 @@ dotnet test Accounting.slnx
 - [x] PHASE 6 — Kasa/Banka (hesaplar, hareketler, transfer, bakiye)
 - [x] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
 - [x] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
-- [ ] PHASE 9 — AI Asistan (fatura okuma, iş sorguları; doğrudan SQL çalıştırmaz)
+- [x] PHASE 9 — AI Asistan (iş sorguları, onaylı araçlar, offline mod; doğrudan SQL çalıştırmaz)
 - [ ] PHASE 10 — Abonelik (planlar, deneme, ödeme entegrasyonu)
