@@ -389,3 +389,60 @@ export interface TransferResponse {
   toAccountId: string;
   toBalance: number;
 }
+
+// ---- Gelir / Gider (PHASE 7)
+
+export type IncomeExpenseSideDto = "Income" | "Expense";
+
+export type IncomeExpenseStatusDto = "Active" | "Cancelled";
+
+export interface IncomeExpenseCategoryDto {
+  id: string;
+  name: string;
+  type: IncomeExpenseSideDto;
+  isActive: boolean;
+  recordCount: number;
+  createdAtUtc: string;
+  updatedAtUtc: string | null;
+}
+
+export interface IncomeExpenseRecordDto {
+  id: string;
+  type: IncomeExpenseSideDto;
+  categoryId: string;
+  categoryName: string;
+  amount: number;
+  date: string;
+  paymentAccountId: string;
+  paymentAccountName: string;
+  description: string | null;
+  documentNumber: string | null;
+  status: IncomeExpenseStatusDto;
+  cancelledAtUtc: string | null;
+  createdAtUtc: string;
+}
+
+export interface IncomeExpenseMonthlyDto {
+  year: number;
+  month: number;
+  income: number;
+  expense: number;
+  net: number;
+}
+
+export interface IncomeExpenseCategoryTotalDto {
+  type: IncomeExpenseSideDto;
+  categoryId: string;
+  categoryName: string;
+  total: number;
+}
+
+export interface IncomeExpenseSummaryResponse {
+  from: string;
+  to: string;
+  totalIncome: number;
+  totalExpense: number;
+  net: number;
+  months: IncomeExpenseMonthlyDto[];
+  categories: IncomeExpenseCategoryTotalDto[];
+}

@@ -32,7 +32,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Tedarikçiler", href: "/suppliers", icon: Truck, enabled: true },
   { label: "Ürünler", href: "/products", icon: Package, enabled: true },
   { label: "Kasa & Banka", href: "/cash", icon: Landmark, enabled: true },
-  { label: "Gelir & Gider", href: "/income-expense", icon: ArrowLeftRight, enabled: false },
+  { label: "Gelir & Gider", href: "/income-expense", icon: ArrowLeftRight, enabled: true },
   { label: "Raporlar", href: "/reports", icon: BarChart3, enabled: false },
   { label: "AI Asistan", href: "/assistant", icon: Sparkles, enabled: false },
   { label: "Ayarlar", href: "/settings", icon: Settings, enabled: true },
