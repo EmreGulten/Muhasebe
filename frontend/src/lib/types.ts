@@ -446,3 +446,118 @@ export interface IncomeExpenseSummaryResponse {
   months: IncomeExpenseMonthlyDto[];
   categories: IncomeExpenseCategoryTotalDto[];
 }
+
+// ---- Raporlar (PHASE 8, muhasebe.md bölüm 3.1 + 25)
+
+export interface DashboardDailyFlowDto {
+  date: string;
+  income: number;
+  expense: number;
+}
+
+export interface DashboardMonthlyRevenueDto {
+  year: number;
+  month: number;
+  total: number;
+}
+
+export interface DashboardTopProductDto {
+  productId: string;
+  productName: string;
+  quantity: number;
+  total: number;
+}
+
+export interface DashboardProfitableProductDto {
+  productId: string;
+  productName: string;
+  estimatedProfit: number;
+  total: number;
+}
+
+export interface DashboardTopDebtorDto {
+  partyId: string;
+  partyName: string;
+  balance: number;
+}
+
+export interface DashboardResponse {
+  dailySales: number;
+  monthlySales: number;
+  monthlyExpense: number;
+  estimatedNet: number;
+  totalReceivable: number;
+  totalPayable: number;
+  cashTotal: number;
+  bankTotal: number;
+  criticalStockCount: number;
+  overdueReceivableCount: number;
+  last30DaysFlow: DashboardDailyFlowDto[];
+  last12MonthsRevenue: DashboardMonthlyRevenueDto[];
+  topSellingProducts: DashboardTopProductDto[];
+  mostProfitableProducts: DashboardProfitableProductDto[];
+  topDebtors: DashboardTopDebtorDto[];
+}
+
+export interface ReceivableRowDto {
+  partyId: string;
+  partyName: string;
+  phone: string | null;
+  balance: number;
+  overdueAmount: number;
+}
+
+export interface ReceivablesReportResponse {
+  items: ReceivableRowDto[];
+  totalReceivable: number;
+  totalOverdue: number;
+  overdueCount: number;
+}
+
+export interface StockRowDto {
+  productId: string;
+  productName: string;
+  sku: string | null;
+  onHand: number;
+  criticalLevel: number;
+  isCritical: boolean;
+  stockValue: number;
+}
+
+export interface StockReportResponse {
+  items: StockRowDto[];
+  totalValue: number;
+  criticalCount: number;
+}
+
+export interface SalesByCustomerDto {
+  partyId: string | null;
+  partyName: string;
+  count: number;
+  total: number;
+}
+
+export interface SalesByProductDto {
+  productId: string;
+  productName: string;
+  quantity: number;
+  total: number;
+}
+
+export interface SalesByDayDto {
+  date: string;
+  count: number;
+  total: number;
+}
+
+export interface SalesReportResponse {
+  from: string;
+  to: string;
+  totalCount: number;
+  totalAmount: number;
+  totalVat: number;
+  averageSale: number;
+  byDay: SalesByDayDto[];
+  byCustomer: SalesByCustomerDto[];
+  byProduct: SalesByProductDto[];
+}
