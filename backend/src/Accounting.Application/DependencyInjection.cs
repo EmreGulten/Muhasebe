@@ -6,6 +6,7 @@ using Accounting.Application.Features.Parties;
 using Accounting.Application.Features.Products;
 using Accounting.Application.Features.Sales;
 using Accounting.Application.Features.Purchases;
+using Accounting.Application.Features.Reports;
 using Accounting.Application.Features.Tenants;
 using Accounting.Application.Services;
 using Accounting.Application.Validators;
@@ -109,6 +110,12 @@ public static class DependencyInjection
         services.AddScoped<GetIncomeExpenseRecordHandler>();
         services.AddScoped<CancelIncomeExpenseRecordHandler>();
         services.AddScoped<GetIncomeExpenseSummaryHandler>();
+
+        // Raporlar
+        services.AddScoped<GetDashboardHandler>();
+        services.AddScoped<GetReceivablesReportHandler>();
+        services.AddScoped<GetStockReportHandler>();
+        services.AddScoped<GetSalesReportHandler>();
 
         services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 
