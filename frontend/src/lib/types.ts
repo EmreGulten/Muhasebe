@@ -339,3 +339,53 @@ export interface PurchaseResponse {
   items: PurchaseItemDto[];
   payments: PurchasePaymentDto[];
 }
+
+// ---- Kasa / Banka (PHASE 6)
+
+export type AccountTypeDto = "Cash" | "Bank" | "CreditCard" | "VirtualPOS";
+
+export interface AccountDto {
+  id: string;
+  name: string;
+  type: AccountTypeDto;
+  currency: string;
+  openingBalance: number;
+  currentBalance: number;
+  isDefault: boolean;
+  isActive: boolean;
+  createdAtUtc: string;
+  updatedAtUtc: string | null;
+  transactionCount: number;
+}
+
+export interface AccountTransactionDto {
+  id: string;
+  accountId: string;
+  accountName: string;
+  type: string;
+  amount: number;
+  date: string;
+  description: string | null;
+  referenceType: string | null;
+  referenceId: string | null;
+  balance: number;
+  createdAtUtc: string;
+}
+
+export interface AccountStatementResponse {
+  accountId: string;
+  accountName: string;
+  currency: string;
+  balanceBeforePage: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: AccountTransactionDto[];
+}
+
+export interface TransferResponse {
+  fromAccountId: string;
+  fromBalance: number;
+  toAccountId: string;
+  toBalance: number;
+}

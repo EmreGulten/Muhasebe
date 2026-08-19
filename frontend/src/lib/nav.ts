@@ -31,7 +31,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Müşteriler", href: "/customers", icon: Users, enabled: true },
   { label: "Tedarikçiler", href: "/suppliers", icon: Truck, enabled: true },
   { label: "Ürünler", href: "/products", icon: Package, enabled: true },
-  { label: "Kasa & Banka", href: "/cash", icon: Landmark, enabled: false },
+  { label: "Kasa & Banka", href: "/cash", icon: Landmark, enabled: true },
   { label: "Gelir & Gider", href: "/income-expense", icon: ArrowLeftRight, enabled: false },
   { label: "Raporlar", href: "/reports", icon: BarChart3, enabled: false },
   { label: "AI Asistan", href: "/assistant", icon: Sparkles, enabled: false },
