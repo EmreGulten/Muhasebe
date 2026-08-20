@@ -113,7 +113,8 @@ gelir/gider yönetimi, dashboard ve raporlar, doğal dilde iş sorguları yapan 
   10 kullanıcı); plan kataloğu migration ile tohumlanır
 - Deneme (bölüm 30): kayıt olan her işletme **14 günlük Pro denemesiyle** başlar (Trialing); dönem
   bitince ya da abonelik yoksa işletme core özelliklere düşer — cari/gelir-gider/kasa/temel satış
-  yaşamaya devam eder, hiçbir veri kaybolmaz
+  yaşamaya devam eder, hiçbir veri kaybolmaz. PHASE 10 öncesi kaydolmuş işletmeler için backfill
+  migration'ı aynı denemeyi açar (abonelik sistemi ilk geldiği gün başlar)
 - Feature guard (`IFeatureGuard`): stok hareketi/transferi, alış belgeleri, stok raporu, AI asistan
   plana göre kapatılır (403 "Plan kısıtı"); depo kotası plan bazlı (Başlangıç 1, Pro 3, İşletme
   sınırsız); AI soru limiti plan tavanıdır — `AI__MONTHLYQUESTIONLIMIT` bu tavanı yalnızca
