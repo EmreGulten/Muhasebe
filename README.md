@@ -3,9 +3,9 @@
 Mikro işletmeler için AI destekli ön muhasebe uygulaması. "Muhasebeci olmadan işletmeni anla" —
 sıfır muhasebe bilgisi olan esnafın günlük işlemlerini kaydedip anlaşılır bir döküm almasını hedefler.
 
-Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6 + PHASE 7 + PHASE 8 + PHASE 9** kapsamını içerir: proje kurulumu, kimlik doğrulama,
+Bu depo, ürün planının **PHASE 0 + PHASE 1 + PHASE 2 + PHASE 3 + PHASE 4 + PHASE 5 + PHASE 6 + PHASE 7 + PHASE 8 + PHASE 9 + PHASE 10** kapsamını içerir: proje kurulumu, kimlik doğrulama,
 çok kiracılı (multi-tenant) işletme sistemi, cari hesaplar (müşteri/tedarikçi), ürün/stok yönetimi, satış ve alış belgeleri, kasa/banka hesapları,
-gelir/gider yönetimi, dashboard ve raporlar, doğal dilde iş sorguları yapan AI asistan.
+gelir/gider yönetimi, dashboard ve raporlar, doğal dilde iş sorguları yapan AI asistan ve abonelik (plan/feature guard) sistemi.
 
 ## Bu fazda çalışanlar
 
@@ -107,6 +107,24 @@ gelir/gider yönetimi, dashboard ve raporlar, doğal dilde iş sorguları yapan 
 - Yetkiler: asistan yalnızca Owner / Admin / Muhasebeci'de (`AiAssistant.Use`)
 - Frontend: /assistant sohbet arayüzü — baloncuklu geçmiş, örnek soru çipleri, sağlayıcı rozeti,
   çevrimdışı mod belirtileri
+- Abonelik planları (bölüm 29): Başlangıç 199 TL (cari/gelir-gider/kasa/temel satış/temel raporlar,
+  1 kullanıcı, 1 depo), Pro 349 TL (+stok, alış, gelişmiş raporlar, AI 100 soru/ay, teklifler, 5
+  kullanıcı, 3 depo), İşletme 599 TL (+çoklu depo sınırsız, API, entegrasyonlar, AI 1000 soru/ay,
+  10 kullanıcı); plan kataloğu migration ile tohumlanır
+- Deneme (bölüm 30): kayıt olan her işletme **14 günlük Pro denemesiyle** başlar (Trialing); dönem
+  bitince ya da abonelik yoksa işletme core özelliklere düşer — cari/gelir-gider/kasa/temel satış
+  yaşamaya devam eder, hiçbir veri kaybolmaz
+- Feature guard (`IFeatureGuard`): stok hareketi/transferi, alış belgeleri, stok raporu, AI asistan
+  plana göre kapatılır (403 "Plan kısıtı"); depo kotası plan bazlı (Başlangıç 1, Pro 3, İşletme
+  sınırsız); AI soru limiti plan tavanıdır — `AI__MONTHLYQUESTIONLIMIT` bu tavanı yalnızca
+  aşağı çekebilir (küresel kısıtlama)
+- Plan değiştirme: `POST /api/v1/subscription/change` (yalnız Owner — `Tenant.Manage`); yeni 30
+  günlük dönem açar, deneme/iptal bayraklarını temizler. Ödeme sağlayıcısı soyutlaması
+  (`IPaymentProvider`) arkasına iyzico/PayTR/Stripe takılabilir; MVP'de fake sağlayıcı ile plan
+  değişimi ödemeyi beklemeden uygulanır (gerçek sağlayıcı bağlanınca checkout akışına bağlanır)
+- Frontend: /subscription sayfası — mevcut plan kartı (durum, deneme bitişi, kalan gün, etkin
+  özellikler), üç plan kartı (fiyat, özellik listesi, kullanıcı/depo/AI limitleri), tek tıkla plan
+  değiştirme (Owner)
 - Health check uçları, OpenAPI (Scalar), rate limiting, denetim kaydı (audit log) altyapısı
 
 ## Teknolojiler
@@ -207,7 +225,7 @@ dotnet test Accounting.slnx
 | `API_PROXY_URL` | Next.js rewrite proxy'sinin API adresi (Compose içinde `http://api:8080`) |
 | `AI_API_KEY` | AI asistan sağlayıcı anahtarı (OpenAI uyumlu). **Boş bırakılırsa asistan offline moda geçer** — dış ağa istek çıkmaz |
 | `AI_BASE_URL`, `AI_MODEL` | Sağlayıcı adresi ve modeli (varsayılan `https://api.openai.com/v1` / `gpt-4o-mini`) |
-| `AI_MONTHLY_QUESTION_LIMIT` | İşletme başına aylık soru limiti (varsayılan 100) |
+| `AI_MONTHLY_QUESTION_LIMIT` | İşletme başına aylık soru limiti (varsayılan 100); plan limitinin üstüne çıkamaz, yalnızca aşağı çeker |
 | `ApplyMigrations` | `true` ise açılışta migration'lar uygulanır |
 
 ## Güvenlik notları
@@ -232,4 +250,4 @@ dotnet test Accounting.slnx
 - [x] PHASE 7 — Gelir/Gider (kategoriler, kayıtlar, raporlar)
 - [x] PHASE 8 — Dashboard + Raporlar (KPI, alacak/stok/satış raporları)
 - [x] PHASE 9 — AI Asistan (iş sorguları, onaylı araçlar, offline mod; doğrudan SQL çalıştırmaz)
-- [ ] PHASE 10 — Abonelik (planlar, deneme, ödeme entegrasyonu)
+- [x] PHASE 10 — Abonelik (planlar, deneme, feature guard, ödeme soyutlaması)
