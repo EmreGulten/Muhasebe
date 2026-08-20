@@ -575,3 +575,27 @@ export interface AiMessageDto {
   content: string;
   createdAtUtc: string;
 }
+
+// ---- Abonelik (PHASE 10, bölüm 29–31)
+
+export interface SubscriptionPlanDto {
+  code: string;
+  name: string;
+  monthlyPrice: number;
+  maxUsers: number;
+  maxWarehouses: number;
+  aiMonthlyQuestionLimit: number;
+  features: string[];
+}
+
+export interface SubscriptionResponse {
+  plan: SubscriptionPlanDto;
+  status: string;
+  isActive: boolean;
+  isTrial: boolean;
+  trialEndsAtUtc: string | null;
+  currentPeriodStartUtc: string;
+  currentPeriodEndUtc: string;
+  daysRemaining: number;
+  effectiveFeatures: string[];
+}

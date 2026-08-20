@@ -1,6 +1,7 @@
 import {
   ArrowLeftRight,
   BarChart3,
+  CreditCard,
   Landmark,
   LayoutDashboard,
   Package,
@@ -35,5 +36,6 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Gelir & Gider", href: "/income-expense", icon: ArrowLeftRight, enabled: true },
   { label: "Raporlar", href: "/reports", icon: BarChart3, enabled: true },
   { label: "AI Asistan", href: "/assistant", icon: Sparkles, enabled: true },
+  { label: "Abonelik", href: "/subscription", icon: CreditCard, enabled: true },
   { label: "Ayarlar", href: "/settings", icon: Settings, enabled: true },
 ];
