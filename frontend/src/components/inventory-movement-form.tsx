@@ -34,9 +34,12 @@ const movementSchema = z
     quantity: z
       .string()
       .refine((value) => parseQuantityInput(value) !== null, "Miktar en fazla 4 basamak ondalık içerebilir (örn. 12,5)."),
-    warehouseId: z.string().min(1, "Depo seçin."),
-    sourceWarehouseId: z.string().min(1, "Kaynak depo seçin."),
-    targetWarehouseId: z.string().min(1, "Hedef depo seçin."),
+    // Depo alanlarının zorunluluğu hareket türüne göre superRefine'da denetlenir;
+    // temel şemada zorunlu yapılırsa transfer dışı hareketlerde görünmeyen
+    // "Hedef depo" hatası formu sessizce engeller.
+    warehouseId: z.string(),
+    sourceWarehouseId: z.string(),
+    targetWarehouseId: z.string(),
     description: z.string().trim().max(300, "Açıklama en fazla 300 karakter olabilir."),
   })
   .superRefine((values, ctx) => {
@@ -48,8 +51,18 @@ const movementSchema = z
     if (parsed !== null && !needsPositive && parsed < 0) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["quantity"], message: "Sayım sonucu negatif olamaz." });
     }
-    if (values.type === "Transfer" && values.sourceWarehouseId === values.targetWarehouseId) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["targetWarehouseId"], message: "Hedef depo kaynak depodan farklı olmalıdır." });
+    if (values.type === "Transfer") {
+      if (!values.sourceWarehouseId) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceWarehouseId"], message: "Kaynak depo seçin." });
+      }
+      if (!values.targetWarehouseId) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["targetWarehouseId"], message: "Hedef depo seçin." });
+      }
+      if (values.sourceWarehouseId && values.sourceWarehouseId === values.targetWarehouseId) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["targetWarehouseId"], message: "Hedef depo kaynak depodan farklı olmalıdır." });
+      }
+    } else if (!values.warehouseId) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["warehouseId"], message: "Depo seçin." });
     }
   });
 
@@ -85,7 +98,7 @@ export function InventoryMovementForm({
     control,
     getValues,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isSubmitted },
   } = useForm<MovementFormValues>({
     resolver: zodResolver(movementSchema),
     defaultValues: {
@@ -174,6 +187,27 @@ export function InventoryMovementForm({
         <span className="tabular-nums">{formatQuantity(product.currentStock)}</span>
         {unitSuffix}
       </p>
+
+      {isSubmitted && Object.keys(errors).length > 0 && (
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p className="font-medium">Hareket kaydedilemedi — şu alanları düzeltin:</p>
+          <ul className="mt-1 list-inside list-disc">
+            {Object.values(errors)
+              .map((error) => error?.message)
+              .filter((message): message is string => Boolean(message))
+              .map((message) => (
+                <li key={message}>{message}</li>
+              ))}
+          </ul>
+        </div>
+      )}
+
+      {save.isError && (
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p className="font-medium">Hareket kaydedilemedi:</p>
+          <p className="mt-1">{save.error instanceof Error ? save.error.message : "Bilinmeyen bir hata oluştu."}</p>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
