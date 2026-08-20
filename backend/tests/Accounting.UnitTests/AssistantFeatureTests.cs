@@ -20,7 +20,6 @@ using Accounting.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Accounting.UnitTests;
@@ -462,23 +461,28 @@ public sealed class AssistantFeatureTests : IDisposable
         owner.Activate();
         var scope = owner.Scope;
 
-        // Limiti 2'ye düşürülmüş elle örneklenmiş handler.
-        var handler = new AskAssistantHandler(
-            scope.ServiceProvider.GetRequiredService<IApplicationDbContext>(),
-            scope.ServiceProvider.GetRequiredService<ICurrentTenant>(),
-            scope.ServiceProvider.GetRequiredService<ICurrentUser>(),
-            scope.ServiceProvider.GetRequiredService<IEnumerable<IAiTool>>(),
-            scope.ServiceProvider.GetRequiredService<IAiProvider>(),
-            Options.Create(new AiOptions { MonthlyQuestionLimit = 2 }),
-            scope.ServiceProvider.GetRequiredService<TimeProvider>());
+        // Kayıt Pro denemesi açar → plan limiti 100 (bölüm 29–30).
+        // Bu ayın 99 kullanıcı sorusu tohumlanır: 100. soru geçer, 101. 429.
+        var tenantId = scope.ServiceProvider.GetRequiredService<ICurrentTenant>().TenantId!.Value;
+        var now = DateTime.UtcNow;
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.AiMessages.AddRange(Enumerable.Range(0, 99).Select(i => new Accounting.Domain.Entities.AiMessage
+        {
+            TenantId = tenantId,
+            UserId = owner.UserId,
+            Role = Accounting.Domain.Enums.AiMessageRole.User,
+            Content = $"geçmiş soru {i}",
+            CreatedAtUtc = now.AddMinutes(-i),
+        }));
+        await db.SaveChangesAsync();
 
+        var handler = scope.ServiceProvider.GetRequiredService<AskAssistantHandler>();
         var request = new Contracts.Assistant.AskAssistantRequest("Bu ay ne kadar kazandım?");
         Assert.NotNull(await handler.HandleAsync(request, default));
-        Assert.NotNull(await handler.HandleAsync(request, default));
 
-        var excess = await Assert.ThrowsAsync<AppException>(
-            () => handler.HandleAsync(request, default));
+        var excess = await Assert.ThrowsAsync<AppException>(() => handler.HandleAsync(request, default));
         Assert.Equal(429, excess.StatusCode);
+        Assert.Contains("100", excess.Message);
     }
 
     // ---- Tenant izolasyonu

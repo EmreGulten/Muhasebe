@@ -15,7 +15,8 @@ public sealed class RegisterHandler(
     UserManager<ApplicationUser> userManager,
     IApplicationDbContext db,
     ITokenService tokenService,
-    IRefreshTokenService refreshTokenService)
+    IRefreshTokenService refreshTokenService,
+    Subscriptions.SubscriptionService subscriptions)
 {
     public async Task<AuthResponse> HandleAsync(RegisterRequest request, string? requestIp, CancellationToken cancellationToken)
     {
@@ -64,6 +65,10 @@ public sealed class RegisterHandler(
         });
 
         await db.SaveChangesAsync(cancellationToken);
+
+        // Yeni işletme deneme aboneliğiyle açılır (muhasebe.md bölüm 30:
+        // SubscriptionOptions.TrialPlanCode planında TrialDays gün).
+        await subscriptions.StartTrialAsync(tenant.Id, cancellationToken);
 
         var (accessToken, accessTokenExpiresAt) = tokenService.CreateAccessToken(user);
         var refresh = await refreshTokenService.IssueAsync(user.Id, requestIp, cancellationToken);

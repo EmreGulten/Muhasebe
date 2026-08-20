@@ -132,11 +132,18 @@ internal static class PurchaseQueries
 }
 
 /// <summary>Yeni alış belgesi — Draft olarak oluşur, stok/cari etkisi yoktur.</summary>
-public sealed class CreatePurchaseHandler(IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
+public sealed class CreatePurchaseHandler(
+    IApplicationDbContext db,
+    ICurrentTenant currentTenant,
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     public async Task<PurchaseResponse> HandleAsync(CreatePurchaseRequest request, CancellationToken cancellationToken)
     {
         var tenantId = PurchaseQueries.RequireTenantId(currentTenant);
+
+        // Alış modülü plana bağlı (bölüm 29–30): Başlangıç planında kapalı.
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Purchases, cancellationToken);
 
         var partyId = await ResolvePartyAsync(db, tenantId, request.PartyId, cancellationToken);
         var warehouseId = await CreateSaleHandler.ResolveWarehouseAsync(db, tenantId, request.WarehouseId, timeProvider, cancellationToken);
@@ -192,11 +199,17 @@ public sealed class CreatePurchaseHandler(IApplicationDbContext db, ICurrentTena
 }
 
 /// <summary>Taslak düzenleme — yalnız Draft durumunda; kalemler yeniden yazılır.</summary>
-public sealed class UpdatePurchaseHandler(IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
+public sealed class UpdatePurchaseHandler(
+    IApplicationDbContext db,
+    ICurrentTenant currentTenant,
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     public async Task<PurchaseResponse> HandleAsync(Guid purchaseId, UpdatePurchaseRequest request, CancellationToken cancellationToken)
     {
         var tenantId = PurchaseQueries.RequireTenantId(currentTenant);
+
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Purchases, cancellationToken);
 
         var purchase = await PurchaseQueries.FindPurchaseAsync(db, tenantId, purchaseId, cancellationToken)
             ?? throw new NotFoundException("Alış bulunamadı.");

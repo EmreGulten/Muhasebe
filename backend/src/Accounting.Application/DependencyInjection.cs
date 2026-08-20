@@ -8,6 +8,7 @@ using Accounting.Application.Features.Sales;
 using Accounting.Application.Features.Purchases;
 using Accounting.Application.Features.Reports;
 using Accounting.Application.Features.Assistant;
+using Accounting.Application.Features.Subscriptions;
 using Accounting.Application.Features.Tenants;
 using Accounting.Application.Services;
 using Accounting.Application.Validators;
@@ -129,6 +130,13 @@ public static class DependencyInjection
         services.AddScoped<IAiTool, GetUpcomingPaymentsTool>();
         services.AddScoped<AskAssistantHandler>();
         services.AddScoped<ListAssistantHistoryHandler>();
+
+        // Abonelik (bölüm 30): feature guard + plan yönetimi.
+        services.AddScoped<SubscriptionService>();
+        services.AddScoped<IFeatureGuard>(sp => sp.GetRequiredService<SubscriptionService>());
+        services.AddScoped<ListSubscriptionPlansHandler>();
+        services.AddScoped<GetSubscriptionHandler>();
+        services.AddScoped<ChangePlanHandler>();
 
         services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 

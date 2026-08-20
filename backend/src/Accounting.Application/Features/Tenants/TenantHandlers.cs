@@ -10,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Accounting.Application.Features.Tenants;
 
 /// <summary>Yeni işletme oluşturur; oluşturan kullanıcı Owner olur.</summary>
-public sealed class CreateTenantHandler(IApplicationDbContext db)
+public sealed class CreateTenantHandler(
+    IApplicationDbContext db,
+    Subscriptions.SubscriptionService subscriptions)
 {
     public async Task<TenantResponse> HandleAsync(Guid userId, CreateTenantRequest request, CancellationToken cancellationToken)
     {
@@ -33,6 +35,9 @@ public sealed class CreateTenantHandler(IApplicationDbContext db)
         });
 
         await db.SaveChangesAsync(cancellationToken);
+
+        // Her yeni işletme deneme aboneliğiyle açılır (bölüm 30).
+        await subscriptions.StartTrialAsync(tenant.Id, cancellationToken);
 
         return new TenantResponse(tenant.Id, tenant.Name, TenantRole.Owner.ToString(), joinedAt);
     }

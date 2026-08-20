@@ -83,6 +83,11 @@ public static class DependencyInjection
             return new OpenAiProvider(client, options);
         });
 
+        // ---- Abonelik (bölüm 30–31): ödeme sağlayıcısı soyutlaması.
+        // MVP'de fake provider; iyzico/PayTR/Stripe aynı sözleşmeyle takılır.
+        services.Configure<SubscriptionOptions>(configuration.GetSection(SubscriptionOptions.SectionName));
+        services.AddSingleton<IPaymentProvider, Payments.FakePaymentProvider>();
+
         services
             .AddHealthChecks()
             .AddNpgSql(

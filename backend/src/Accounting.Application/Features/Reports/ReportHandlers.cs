@@ -291,11 +291,14 @@ public sealed class GetReceivablesReportHandler(
 /// eldeki miktar ve maliyet değeri (eldeki × alış fiyatı). Hizmetler yoktur.
 /// </summary>
 public sealed class GetStockReportHandler(
-    IApplicationDbContext db, ICurrentTenant currentTenant)
+    IApplicationDbContext db, ICurrentTenant currentTenant, IFeatureGuard featureGuard)
 {
     public async Task<StockReportResponse> HandleAsync(CancellationToken cancellationToken)
     {
         var tenantId = ReportQueries.RequireTenantId(currentTenant);
+
+        // Stok raporu stok modülüne bağlı (bölüm 29–30).
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Stock, cancellationToken);
 
         var stocks = db.InventoryTransactions
             .AsNoTracking()

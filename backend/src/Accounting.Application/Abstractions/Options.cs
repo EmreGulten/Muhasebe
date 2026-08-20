@@ -46,3 +46,21 @@ public sealed class AiOptions
     /// <summary>İşletme başına aylık soru limiti (PHASE 9 kullanım limiti).</summary>
     public int MonthlyQuestionLimit { get; init; } = 100;
 }
+
+/// <summary>
+/// Abonelik yapılandırması (appsettings "Subscription" bölümü, bölüm 30):
+/// yeni işletmeler deneme planıyla açılır.
+/// </summary>
+public sealed class SubscriptionOptions
+{
+    public const string SectionName = "Subscription";
+
+    /// <summary>Deneme süresi (gün).</summary>
+    public int TrialDays { get; init; } = 14;
+
+    /// <summary>Denemede açılan plan kodu.</summary>
+    public string TrialPlanCode { get; init; } = "pro";
+
+    /// <summary>Ücretli dönem uzunluğu (gün) — plan değişiminde yeni dönem.</summary>
+    public int BillingPeriodDays { get; init; } = 30;
+}

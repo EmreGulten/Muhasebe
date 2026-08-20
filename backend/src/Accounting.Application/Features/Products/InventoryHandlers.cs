@@ -16,7 +16,8 @@ namespace Accounting.Application.Features.Products;
 public sealed class CreateInventoryTransactionHandler(
     IApplicationDbContext db,
     ICurrentTenant currentTenant,
-    TimeProvider timeProvider)
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     private static readonly HashSet<InventoryTransactionType> ManualTypes =
     [
@@ -30,6 +31,9 @@ public sealed class CreateInventoryTransactionHandler(
         CreateInventoryTransactionRequest request, CancellationToken cancellationToken)
     {
         var tenantId = ProductQueries.RequireTenantId(currentTenant);
+
+        // Stok modülü plana bağlı (bölüm 29–30): Başlangıç planında kapalı.
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Stock, cancellationToken);
 
         var product = await UpdateProductHandler.FindProductAsync(db, tenantId, request.ProductId, cancellationToken)
             ?? throw new NotFoundException("Ürün bulunamadı.");
@@ -132,12 +136,16 @@ public sealed class CreateInventoryTransactionHandler(
 public sealed class CreateInventoryTransferHandler(
     IApplicationDbContext db,
     ICurrentTenant currentTenant,
-    TimeProvider timeProvider)
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     public async Task<IReadOnlyList<InventoryTransactionDto>> HandleAsync(
         CreateInventoryTransferRequest request, CancellationToken cancellationToken)
     {
         var tenantId = ProductQueries.RequireTenantId(currentTenant);
+
+        // Stok modülü plana bağlı (bölüm 29–30).
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Stock, cancellationToken);
 
         if (request.SourceWarehouseId == request.TargetWarehouseId)
         {

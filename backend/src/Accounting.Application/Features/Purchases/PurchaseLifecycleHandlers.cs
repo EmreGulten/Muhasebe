@@ -14,11 +14,18 @@ namespace Accounting.Application.Features.Purchases;
 /// borç (biz borçlanırız — alacak), istenirse anlık ödeme (kasadan çıkış +
 /// cari borç düşümü). Onaydan sonra belge değiştirilemez.
 /// </summary>
-public sealed class ConfirmPurchaseHandler(IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
+public sealed class ConfirmPurchaseHandler(
+    IApplicationDbContext db,
+    ICurrentTenant currentTenant,
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     public async Task<PurchaseResponse> HandleAsync(Guid purchaseId, ConfirmPurchaseRequest request, CancellationToken cancellationToken)
     {
         var tenantId = PurchaseQueries.RequireTenantId(currentTenant);
+
+        // Alış modülü plana bağlı (bölüm 29–30).
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Purchases, cancellationToken);
 
         var purchase = await PurchaseQueries.FindPurchaseAsync(db, tenantId, purchaseId, cancellationToken)
             ?? throw new NotFoundException("Alış bulunamadı.");
@@ -282,11 +289,17 @@ public sealed class CancelPurchaseHandler(IApplicationDbContext db, ICurrentTena
 }
 
 /// <summary>Sonradan ödeme ekleme — kalan borcu düşürür, durumu günceller.</summary>
-public sealed class AddPurchasePaymentHandler(IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
+public sealed class AddPurchasePaymentHandler(
+    IApplicationDbContext db,
+    ICurrentTenant currentTenant,
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     public async Task<PurchaseResponse> HandleAsync(Guid purchaseId, AddPurchasePaymentRequest request, CancellationToken cancellationToken)
     {
         var tenantId = PurchaseQueries.RequireTenantId(currentTenant);
+
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Purchases, cancellationToken);
 
         var purchase = await PurchaseQueries.FindPurchaseAsync(db, tenantId, purchaseId, cancellationToken)
             ?? throw new NotFoundException("Alış bulunamadı.");

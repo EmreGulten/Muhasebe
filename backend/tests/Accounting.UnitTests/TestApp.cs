@@ -3,6 +3,7 @@ using Accounting.Application.Abstractions;
 using Accounting.Domain.Entities;
 using Accounting.Infrastructure.Ai;
 using Accounting.Infrastructure.Identity;
+using Accounting.Infrastructure.Payments;
 using Accounting.Infrastructure.MultiTenancy;
 using Accounting.Infrastructure.Persistence;
 using Accounting.Infrastructure.Persistence.Interceptors;
@@ -74,6 +75,10 @@ public sealed class TestApp : IDisposable
         // varsayılan ayarlarla (ApiKey boş, aylık limit 100).
         services.AddSingleton<IOptions<AiOptions>>(_ => Options.Create(new AiOptions()));
         services.AddSingleton<IAiProvider, OfflineAiProvider>();
+
+        // Abonelik (PHASE 10): varsayılan ayarlar (14 gün Pro denemesi) + fake ödeme.
+        services.AddSingleton<IOptions<SubscriptionOptions>>(_ => Options.Create(new SubscriptionOptions()));
+        services.AddSingleton<IPaymentProvider, FakePaymentProvider>();
 
         Services = services.BuildServiceProvider();
 

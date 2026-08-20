@@ -49,6 +49,10 @@ public interface IApplicationDbContext
 
     DbSet<AiMessage> AiMessages { get; }
 
+    DbSet<SubscriptionPlan> SubscriptionPlans { get; }
+
+    DbSet<Subscription> Subscriptions { get; }
+
     DbSet<RefreshToken> RefreshTokens { get; }
 
     DbSet<AuditLog> AuditLogs { get; }

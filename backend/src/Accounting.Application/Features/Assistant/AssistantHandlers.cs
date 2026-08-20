@@ -42,7 +42,8 @@ public sealed class AskAssistantHandler(
     IEnumerable<IAiTool> tools,
     IAiProvider provider,
     IOptions<AiOptions> aiOptions,
-    TimeProvider timeProvider)
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     /// <summary>Sağlayıcıya bağlam olarak verilen en fazla geçmiş mesaj sayısı.</summary>
     private const int HistoryContextMessages = 10;
@@ -54,17 +55,22 @@ public sealed class AskAssistantHandler(
             ?? throw new AppException("Soruyu soran kullanıcı çözülemedi.", 401, "Oturum gerekli");
         var question = request.Question.Trim();
 
-        // Kullanım limiti (PHASE 9): işletme başına aylık soru sayısı.
+        // Plan kısıtı (PHASE 10, bölüm 30): AI özelliği plana bağlı.
+        await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.AiAssistant, cancellationToken);
+
+        // Kullanım limiti (PHASE 9): plan limiti öncelikli, yoksa genel varsayılan.
+        var monthlyLimit = await featureGuard.AiMonthlyLimitAsync(
+            tenantId, aiOptions.Value.MonthlyQuestionLimit, cancellationToken);
         var today = Dates.ToUtcDate(timeProvider.GetUtcNow().UtcDateTime);
         var monthStart = new DateTime(today.Year, today.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var monthQuestions = await db.AiMessages.AsNoTracking()
             .CountAsync(m => m.TenantId == tenantId
                 && m.Role == AiMessageRole.User
                 && m.CreatedAtUtc >= monthStart, cancellationToken);
-        if (monthQuestions >= aiOptions.Value.MonthlyQuestionLimit)
+        if (monthQuestions >= monthlyLimit)
         {
             throw new AppException(
-                $"Bu ayın AI soru limiti doldu ({aiOptions.Value.MonthlyQuestionLimit} soru).", 429, "Limit aşıldı");
+                $"Bu ayın AI soru limiti doldu ({monthlyLimit} soru).", 429, "Limit aşıldı");
         }
 
         // Bağlam: kullanıcının bu işletmedeki son mesajları (kronolojik).

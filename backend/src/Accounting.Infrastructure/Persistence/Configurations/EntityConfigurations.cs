@@ -596,3 +596,86 @@ public sealed class AiMessageConfiguration : IEntityTypeConfiguration<AiMessage>
         builder.HasIndex(m => new { m.TenantId, m.Role, m.CreatedAtUtc });
     }
 }
+
+/// <summary>
+/// Abonelik planı kataloğu (muhasebe.md bölüm 29). Üç plan tohum veriyle
+/// (HasData) gelir — kod ve sabit kimlikler Domain'de (SubscriptionPlans).
+/// </summary>
+public sealed class SubscriptionPlanConfiguration : IEntityTypeConfiguration<SubscriptionPlan>
+{
+    public void Configure(EntityTypeBuilder<SubscriptionPlan> builder)
+    {
+        builder.ToTable("SubscriptionPlans");
+
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Code).HasMaxLength(32).IsRequired();
+        builder.Property(p => p.Name).HasMaxLength(100).IsRequired();
+        builder.Property(p => p.MonthlyPrice).HasPrecision(18, 2);
+        builder.Property(p => p.Features).HasMaxLength(500).IsRequired();
+        builder.HasIndex(p => p.Code).IsUnique();
+
+        // Bölüm 29 fiyatlandırması. Çoklu depo = İşletme planı (sınırsız: −1).
+        builder.HasData(
+            new SubscriptionPlan
+            {
+                Id = Accounting.Domain.Enums.SubscriptionPlans.StarterId,
+                Code = Accounting.Domain.Enums.SubscriptionPlans.StarterCode,
+                Name = "Başlangıç",
+                MonthlyPrice = 199m,
+                MaxUsers = 1,
+                MaxWarehouses = 1,
+                AiMonthlyQuestionLimit = 0,
+                Features = string.Empty,
+                IsActive = true,
+                CreatedAtUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new SubscriptionPlan
+            {
+                Id = Accounting.Domain.Enums.SubscriptionPlans.ProId,
+                Code = Accounting.Domain.Enums.SubscriptionPlans.ProCode,
+                Name = "Pro",
+                MonthlyPrice = 349m,
+                MaxUsers = 5,
+                MaxWarehouses = 3,
+                AiMonthlyQuestionLimit = 100,
+                Features = "stock,purchases,reports_advanced,ai_assistant,quotes",
+                IsActive = true,
+                CreatedAtUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new SubscriptionPlan
+            {
+                Id = Accounting.Domain.Enums.SubscriptionPlans.BusinessId,
+                Code = Accounting.Domain.Enums.SubscriptionPlans.BusinessCode,
+                Name = "İşletme",
+                MonthlyPrice = 599m,
+                MaxUsers = 10,
+                MaxWarehouses = -1,
+                AiMonthlyQuestionLimit = 1000,
+                Features = "stock,purchases,reports_advanced,ai_assistant,multi_warehouse,api,integrations,quotes",
+                IsActive = true,
+                CreatedAtUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            });
+    }
+}
+
+/// <summary>İşletme abonelikleri (muhasebe.md bölüm 30).</summary>
+public sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
+{
+    public void Configure(EntityTypeBuilder<Subscription> builder)
+    {
+        builder.ToTable("Subscriptions");
+
+        builder.HasKey(s => s.Id);
+
+        builder.Property(s => s.Status).HasConversion<int>();
+
+        // Geçerli abonelik çözümlemesi: en son kayıt.
+        builder.HasIndex(s => new { s.TenantId, s.CreatedAtUtc });
+
+        builder.HasOne<SubscriptionPlan>()
+            .WithMany()
+            .HasForeignKey(s => s.PlanId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}

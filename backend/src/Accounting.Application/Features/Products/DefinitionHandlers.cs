@@ -261,7 +261,11 @@ public sealed class ListWarehousesHandler(IApplicationDbContext db, ICurrentTena
     }
 }
 
-public sealed class CreateWarehouseHandler(IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
+public sealed class CreateWarehouseHandler(
+    IApplicationDbContext db,
+    ICurrentTenant currentTenant,
+    TimeProvider timeProvider,
+    IFeatureGuard featureGuard)
 {
     public async Task<WarehouseDto> HandleAsync(CreateWarehouseRequest request, CancellationToken cancellationToken)
     {
@@ -272,6 +276,21 @@ public sealed class CreateWarehouseHandler(IApplicationDbContext db, ICurrentTen
         if (!hasAny)
         {
             request = request with { IsDefault = true };
+        }
+
+        // Depo kotası (bölüm 30): ilk depo hariç plan üst sınırıyla sınırlı.
+        var snapshot = await featureGuard.ResolveAsync(tenantId, cancellationToken);
+        var maxWarehouses = snapshot.Plan.MaxWarehouses;
+        if (maxWarehouses >= 0)
+        {
+            var count = await db.Warehouses.CountAsync(w => w.TenantId == tenantId, cancellationToken);
+            if (count >= maxWarehouses)
+            {
+                throw new AppException(
+                    $"Planınız ({snapshot.Plan.Name}) en fazla {maxWarehouses} depo içerebilir. Çoklu depo için İşletme planına geçin.",
+                    403,
+                    "Plan kısıtı");
+            }
         }
 
         var warehouse = new Warehouse
