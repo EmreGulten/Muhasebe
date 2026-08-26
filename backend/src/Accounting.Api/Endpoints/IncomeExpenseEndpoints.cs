@@ -6,7 +6,7 @@ using Accounting.Domain.Authorization;
 
 namespace Accounting.Api.Endpoints;
 
-/// <summary>Gelir/gider uç noktaları (muhasebe.md bölüm 8, 23, 24).</summary>
+/// <summary>Gelir/gider uç noktaları.</summary>
 public static class IncomeExpenseEndpoints
 {
     public static void MapIncomeExpenseEndpoints(this IEndpointRouteBuilder app)
@@ -116,7 +116,7 @@ public static class IncomeExpenseEndpoints
                 CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(from, to, cancellationToken)))
             .WithName("GetIncomeExpenseSummary")
-            .WithSummary("Dönem özeti — toplamlar, aylık ve kategori bazlı döküm (bölüm 25)")
+            .WithSummary("Dönem özeti — toplamlar, aylık ve kategori bazlı döküm")
             .RequireTenant()
             .RequirePermission(Permissions.ExpensesView);
     }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Accounting.Application.Features.Sales;
 
 /// <summary>
-/// Satış onayı (muhasebe.md bölüm 6 ve 24). Tek SaveChanges — dolayısıyla tek
+/// Satış onayı. Tek SaveChanges — dolayısıyla tek
 /// transaction — içinde: stok düşümü (hizmet hariç), müşterili satışta cari borç,
 /// istenirse anlık tahsilat (kasa hareketi + cari alacak). Onaydan sonra belge
 /// değiştirilemez; düzeltme iptal + yeni belge ile yapılır.
@@ -176,7 +176,7 @@ public sealed class ConfirmSaleHandler(IApplicationDbContext db, ICurrentTenant 
 }
 
 /// <summary>
-/// Satış iptali (muhasebe.md bölüm 23). Onaylı belgeyi ters hareketlerle denkleştirir:
+/// Satış iptali. Onaylı belgeyi ters hareketlerle denkleştirir:
 /// stok geri eklenir, cari borç ve tahsilatların cari alacağı ters işaretle kapanır,
 /// kasa hareketleri iade edilir. Kayıtlar silinmez; Cancelled terminal durumdur.
 /// Tek SaveChanges = tek transaction.
@@ -247,8 +247,8 @@ public sealed class CancelSaleHandler(IApplicationDbContext db, ICurrentTenant c
         }
 
         // 3) Ödemelerin tersine çevrilmesi: kasa hareketi ve tahsilatın cari
-        // alacağı da ters işaretle döner (bölüm 23 — her hareket kendi tersini
-        // alır; böylece rapor toplamları otomatik sıfırlanır).
+        // alacağı da ters işaretle döner. Her hareket kendi tersini aldığı için
+        // rapor toplamları otomatik sıfırlanır.
         foreach (var payment in sale.Payments)
         {
             db.AccountTransactions.Add(new AccountTransaction

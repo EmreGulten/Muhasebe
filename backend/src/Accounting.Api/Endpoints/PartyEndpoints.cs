@@ -6,7 +6,7 @@ using Accounting.Domain.Authorization;
 
 namespace Accounting.Api.Endpoints;
 
-/// <summary>Cari hesap uç noktaları (muhasebe.md bölüm 4 ve 19).</summary>
+/// <summary>Cari hesap uç noktaları.</summary>
 public static class PartyEndpoints
 {
     public static void MapPartyEndpoints(this IEndpointRouteBuilder app)

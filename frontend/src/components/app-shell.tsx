@@ -1,12 +1,13 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Calculator, Check, ChevronsUpDown, Loader2, LogOut, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, LogOut, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -153,7 +154,7 @@ function SidebarNav() {
             aria-current={isActive ? "page" : undefined}
             className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
               isActive
-                ? "bg-primary/10 font-medium text-primary"
+                ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-sm"
                 : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             }`}
           >
@@ -232,12 +233,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-svh w-full">
-      <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r bg-background md:flex">
-        <div className="flex h-14 items-center gap-2 border-b px-4 font-semibold">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Calculator className="size-4" />
+      <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground md:flex">
+        <div className="flex h-16 items-center gap-3 border-b px-4 font-semibold tracking-tight">
+          <BrandMark />
+          <span>
+            Muhasebe
+            <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-sidebar-foreground/50">İşletme paneli</span>
           </span>
-          Muhasebe
         </div>
         <div className="flex-1 overflow-y-auto">
           <SidebarNav />
@@ -248,11 +250,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <header className="sticky top-0 z-10 flex h-16 items-center gap-3 border-b bg-background/90 px-4 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75">
           <div className="flex items-center gap-2 font-semibold md:hidden">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Calculator className="size-4" />
-            </span>
+            <BrandMark className="size-8" />
           </div>
           <div className="md:hidden">
             <TenantSwitcher tenants={me.tenants} activeTenantId={getActiveTenantId()} />

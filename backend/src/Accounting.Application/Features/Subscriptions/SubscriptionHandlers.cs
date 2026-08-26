@@ -13,7 +13,7 @@ internal static class SubscriptionQueries
             ?? throw new ConflictException("Aktif işletme bağlamı bulunamadı. X-Tenant-Id başlığını gönderin.");
 }
 
-/// <summary>Plan kataloğu (muhasebe.md bölüm 29) — fiyata göre artan sırada.</summary>
+/// <summary>Plan kataloğu — fiyata göre artan sırada.</summary>
 public sealed class ListSubscriptionPlansHandler(IApplicationDbContext db)
 {
     public async Task<IReadOnlyList<SubscriptionPlanDto>> HandleAsync(CancellationToken cancellationToken)
@@ -70,7 +70,7 @@ public sealed class GetSubscriptionHandler(
 }
 
 /// <summary>
-/// Plan değiştirme (muhasebe.md bölüm 30–31). MVP'de doğrudan dönem açar;
+/// Plan değiştirme. MVP'de doğrudan dönem açar;
 /// ödeme sağlayıcısı soyutlaması (IPaymentProvider) arkasına iyzico/PayTR
 /// takılınca checkout akışına bağlanır. Uç nokta Tenant.Manage izni ister.
 /// </summary>

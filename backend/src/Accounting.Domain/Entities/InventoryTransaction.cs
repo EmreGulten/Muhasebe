@@ -3,7 +3,7 @@ using Accounting.Domain.Common;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Stok hareketi (muhasebe.md bölüm 5.2). Defter modeli: kayıtlar
+/// Stok hareketi. Defter modeli: kayıtlar
 /// değiştirilemez/silinemez; düzeltmeler yeni (Sayım/Düzeltme) hareketiyle
 /// yapılır. Quantity işaretlidir: pozitif = stoğa giriş, negatif = çıkış.
 /// Miktar numeric(18,4).

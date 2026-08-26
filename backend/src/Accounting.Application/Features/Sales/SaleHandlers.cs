@@ -258,7 +258,7 @@ public sealed class UpdateSaleHandler(IApplicationDbContext db, ICurrentTenant c
     }
 }
 
-/// <summary>Taslak silme. Onaylı belge silinemez — iptal edilir (muhasebe.md bölüm 23).</summary>
+/// <summary>Taslak silme. Onaylı belge silinemez — iptal edilir.</summary>
 public sealed class DeleteSaleHandler(IApplicationDbContext db, ICurrentTenant currentTenant)
 {
     public async Task HandleAsync(Guid saleId, CancellationToken cancellationToken)

@@ -4,7 +4,7 @@ using Accounting.Application.Abstractions;
 namespace Accounting.Infrastructure.Payments;
 
 /// <summary>
-/// MVP ödeme sağlayıcısı (muhasebe.md bölüm 31): gerçek para hareketi yok.
+/// MVP ödeme sağlayıcısı: gerçek para hareketi yok.
 /// Checkout oturumu açar, sahte bir yönlendirme adresi döner; plan değişimi
 /// ChangePlanHandler'da ödemeyi beklemeden uygulanır. iyzico/PayTR/Stripe
 /// aynı IPaymentProvider sözleşmesiyle arkasına takılır — domain katmanına

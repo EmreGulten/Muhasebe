@@ -23,8 +23,8 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 8 raporları: dashboard 10 KPI + beş grafik (bölüm 3.1), alacaklar,
-/// stok ve satış raporları (bölüm 25) — gerçek hareket zincirinden üretilen
+/// raporları: dashboard 10 KPI + beş grafik, alacaklar,
+/// stok ve satış raporları — gerçek hareket zincirinden üretilen
 /// değerlerle, tenant izolasyonu ve izin matrisi dahil.
 /// </summary>
 public sealed class ReportFeatureTests : IDisposable

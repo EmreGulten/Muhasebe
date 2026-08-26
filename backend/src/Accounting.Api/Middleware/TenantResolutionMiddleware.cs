@@ -9,8 +9,7 @@ namespace Accounting.Api.Middleware;
 /// <summary>
 /// [RequireTenant] işaretli endpoint'lerde X-Tenant-Id başlığını çözer,
 /// kullanıcının o işletmede üyeliğini doğrular ve istek kapsamı TenantContext'i
-/// set eder. Tenant izolasyonunun backend seviyesinde zorlandığı noktadır
-/// (muhasebe.md bölüm 13).
+/// set eder. Tenant izolasyonunun backend seviyesinde zorlandığı noktadır.
 /// </summary>
 public sealed class TenantResolutionMiddleware(RequestDelegate next)
 {

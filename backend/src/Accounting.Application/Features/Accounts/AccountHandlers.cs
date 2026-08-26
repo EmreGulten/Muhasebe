@@ -95,7 +95,7 @@ public sealed class GetAccountHandler(IApplicationDbContext db, ICurrentTenant c
 
 /// <summary>
 /// Yeni hesap. Açılış bakiyesi 0'dan büyükse tek seferlik OpeningBalance hareketi
-/// ile birlikte, tek SaveChanges'te yazılır (bölüm 24).
+/// ile birlikte, tek SaveChanges'te yazılır.
 /// </summary>
 public sealed class CreateAccountHandler(
     IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
@@ -303,7 +303,7 @@ public sealed class CreateAccountTransactionHandler(
 }
 
 /// <summary>
-/// Hesaplar arası transfer — tek işlemde çıkış + giriş çifti (bölüm 9).
+/// Hesaplar arası transfer — tek işlemde çıkış + giriş çifti.
 /// Çifti ReferenceId üzerinden bağlanır; hesaplar farklı ve aktif olmalıdır.
 /// </summary>
 public sealed class CreateTransferHandler(

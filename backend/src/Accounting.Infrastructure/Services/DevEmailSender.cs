@@ -4,8 +4,8 @@ using Microsoft.Extensions.Logging;
 namespace Accounting.Infrastructure.Services;
 
 /// <summary>
-/// MVP e-posta göndericisi: içeriği log'a yazar. Kalıcı sağlayıcı
-/// (Resend/SES) sonraki fazlarda IEmailSender arkasına takılır.
+/// Geliştirme e-posta göndericisi: içeriği log'a yazar. Kalıcı sağlayıcı
+/// (Resend/SES) IEmailSender arkasına bağlanabilir.
 /// </summary>
 public sealed partial class DevEmailSender(ILogger<DevEmailSender> logger) : IEmailSender
 {

@@ -4,10 +4,10 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Kasa/banka hesabı (muhasebe.md bölüm 9). Her tenant'ta ilk tahsilat ya da
+/// Kasa/banka hesabı. Her tenant'ta ilk tahsilat ya da
 /// ödemede "Kasa" varsayılan hesabı lazy oluşur (satış/alış modülleri yazar);
-/// hesap yönetimi (tür, para birimi, açılış bakiyesi, transfer, döküm)
-/// PHASE 6 ile açıktır. Bakiye = Σ hesap hareketleri (açılış dahil).
+/// hesap yönetimi tür, para birimi, açılış bakiyesi, transfer ve dökümü kapsar.
+/// Bakiye, açılış dahil tüm hesap hareketlerinin toplamıdır.
 /// </summary>
 public class Account : ITenantScoped, ISoftDeletable, IHasTimestamps
 {
@@ -17,7 +17,7 @@ public class Account : ITenantScoped, ISoftDeletable, IHasTimestamps
 
     public string Name { get; set; } = null!;
 
-    /// <summary>Hesap türü (bölüm 9): kasa, banka, kredi kartı, sanal POS.</summary>
+    /// <summary>Hesap türü: kasa, banka, kredi kartı, sanal POS.</summary>
     public AccountType Type { get; set; } = AccountType.Cash;
 
     /// <summary>ISO 4217 para birimi (MVP'de tek para birimi: TRY).</summary>

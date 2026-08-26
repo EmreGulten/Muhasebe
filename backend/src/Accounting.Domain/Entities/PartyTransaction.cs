@@ -4,12 +4,12 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Cari hareket — ekstrenin satırı (muhasebe.md bölüm 4.2).
+/// Cari hareket — ekstrenin satırı.
 /// Debit (borç) tarafı bize olan alacağı, Credit (alacak) tarafı bizim
 /// borcumuzu artırır. Bakiye = ΣDebit − ΣCredit (pozitif = taraf bize borçlu).
 ///
 /// Kayıtlar değişmez (immutable): hatalar "Manuel düzeltme" hareketiyle
-/// telafi edilir, fiziksel güncelleme/silme yapılmaz (muhasebe.md bölüm 23).
+/// telafi edilir, fiziksel güncelleme/silme yapılmaz.
 /// </summary>
 public class PartyTransaction : ITenantScoped, IHasTimestamps
 {

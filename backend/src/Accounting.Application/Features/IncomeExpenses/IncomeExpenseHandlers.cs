@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Accounting.Application.Features.IncomeExpenses;
 
 /// <summary>
-/// Gelir/gider kaydı oluşturma (muhasebe.md bölüm 8, 24). Kayıt ve kasa hareketi
+/// Gelir/gider kaydı oluşturma. Kayıt ve kasa hareketi
 /// tek transaction'da yazılır: gelir hesaba +, gider − işaretli hareket düşer.
 /// Hesap verilmezse varsayılan "Kasa" lazy oluşur (satış/alış ödemeleriyle aynı).
 /// </summary>
@@ -51,7 +51,7 @@ public sealed class CreateIncomeExpenseRecordHandler(
         }
         else
         {
-            // Varsayılan kasa lazy oluşur; SaveChanges çevreleyen kayıt ile atomik (bölüm 24).
+            // Varsayılan kasa lazy oluşur; SaveChanges çevreleyen kayıt ile atomik.
             account = await SaleAccounts.EnsureDefaultAccountAsync(db, tenantId, timeProvider, cancellationToken);
         }
 
@@ -204,7 +204,7 @@ public sealed class GetIncomeExpenseRecordHandler(
 }
 
 /// <summary>
-/// Kayıt iptali (muhasebe.md bölüm 23): kasa hareketinin tersi yazılır, kayıt
+/// Kayıt iptali: kasa hareketinin tersi yazılır, kayıt
 /// Cancelled durumuna geçer ve terminaldir. Kayıtlar hiçbir koşulda değiştirilmez.
 /// </summary>
 public sealed class CancelIncomeExpenseRecordHandler(
@@ -232,7 +232,7 @@ public sealed class CancelIncomeExpenseRecordHandler(
         var typeLabel = record.Type == IncomeExpenseType.Income ? "Gelir" : "Gider";
         var signedAmount = record.Type == IncomeExpenseType.Income ? record.Amount : -record.Amount;
 
-        // Ters hareket: kasa hesabını kayıt anındaki durumuna döndürür (bölüm 23).
+        // Ters hareket: kasa hesabını kayıt anındaki durumuna döndürür.
         db.AccountTransactions.Add(new AccountTransaction
         {
             TenantId = tenantId,
@@ -266,7 +266,7 @@ public sealed class CancelIncomeExpenseRecordHandler(
 }
 
 /// <summary>
-/// Dönem özeti (muhasebe.md bölüm 25 — gelir gider raporu MVP'si): toplamlar,
+/// Dönem özeti: toplamlar,
 /// aylık döküm (boş aylar sıfırla listelenir) ve kategori bazlı toplamlar.
 /// İptal edilmiş kayıtlar dahil edilmez.
 /// </summary>

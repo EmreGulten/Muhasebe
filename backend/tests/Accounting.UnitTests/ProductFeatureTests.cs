@@ -14,9 +14,9 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 3 ürün/stok özelliği: ürün CRUD + SKU benzersizliği, stok = Σ işaretli
+/// ürün/stok özelliği: ürün CRUD + SKU benzersizliği, stok = Σ işaretli
 /// miktar, sayım farkı, transfer çifti, kritik stok, tanım (kategori/birim/depo)
-/// yaşam döngüleri, tenant izolasyonu ve izin matrisi (muhasebe.md bölüm 5).
+/// yaşam döngüleri, tenant izolasyonu ve izin matrisi.
 /// </summary>
 public sealed class ProductFeatureTests : IDisposable
 {
@@ -307,7 +307,7 @@ public sealed class ProductFeatureTests : IDisposable
         Assert.DoesNotContain(critical, c => c.ProductId == noThreshold.Id || c.ProductId == service.Id);
     }
 
-    // ---- Silme kuralları (bölüm 23)
+    // ---- Silme kuralları
 
     [Fact]
     public async Task DeleteProduct_WithMovements_ThrowsConflict()

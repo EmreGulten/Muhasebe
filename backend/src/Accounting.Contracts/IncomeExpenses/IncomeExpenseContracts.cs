@@ -16,7 +16,7 @@ public sealed record CreateIncomeExpenseCategoryRequest(string Name, string Type
 public sealed record UpdateIncomeExpenseCategoryRequest(string Name, bool IsActive);
 
 /// <summary>
-/// Gelir/gider kaydı (muhasebe.md bölüm 8). PaymentAccountId verilmezse
+/// Gelir/gider kaydı. PaymentAccountId verilmezse
 /// varsayılan "Kasa" hesabı kullanılır. Kayıt ilgili hesaba işaretli hareket
 /// yazar; sonradan değiştirilemez — düzeltme iptalle yapılır.
 /// </summary>
@@ -44,7 +44,7 @@ public sealed record IncomeExpenseRecordDto(
     DateTime? CancelledAtUtc,
     DateTime CreatedAtUtc);
 
-/// <summary>Dönem özeti (muhasebe.md bölüm 25 — gelir gider raporu MVP'si).</summary>
+/// <summary>Dönem özeti.</summary>
 public sealed record IncomeExpenseSummaryResponse(
     DateTime From,
     DateTime To,

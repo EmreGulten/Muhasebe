@@ -3,7 +3,7 @@ using Accounting.Domain.Common;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Ürün veya hizmet (muhasebe.md bölüm 5.1). Hizmetler stok takibi yapmaz —
+/// Ürün veya hizmet. Hizmetler stok takibi yapmaz —
 /// IsService=true iken stok hareketi girilemez.
 /// </summary>
 public class Product : ITenantScoped, ISoftDeletable, IHasTimestamps

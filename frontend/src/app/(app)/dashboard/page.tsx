@@ -126,7 +126,7 @@ export default function DashboardPage() {
         </Card>
       ) : (
         <>
-          {/* 10 KPI kartı (plan bölüm 3.1). */}
+          {/* İşletmenin güncel durumunu özetleyen KPI kartları. */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {kpis.map((stat) => (
               <Card key={stat.title}>

@@ -60,7 +60,7 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IEmailSender, DevEmailSender>();
 
-        // ---- AI asistan (muhasebe.md bölüm 11, 16): sağlayıcı soyutlaması.
+        // ---- AI asistan: sağlayıcı soyutlaması.
         // ApiKey tanımlıysa OpenAI uyumlu sağlayıcı, yoksa offline asistan —
         // ikisi de yalnızca onaylı iş araçları üzerinden çalışır.
         services.Configure<AiOptions>(configuration.GetSection(AiOptions.SectionName));
@@ -83,7 +83,7 @@ public static class DependencyInjection
             return new OpenAiProvider(client, options);
         });
 
-        // ---- Abonelik (bölüm 30–31): ödeme sağlayıcısı soyutlaması.
+        // ---- Abonelik: ödeme sağlayıcısı soyutlaması.
         // MVP'de fake provider; iyzico/PayTR/Stripe aynı sözleşmeyle takılır.
         services.Configure<SubscriptionOptions>(configuration.GetSection(SubscriptionOptions.SectionName));
         services.AddSingleton<IPaymentProvider, Payments.FakePaymentProvider>();

@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Accounting.Application.Features.Assistant;
 
-// ---- Onaylı iş araçları (muhasebe.md bölüm 11.1)
+// ---- Onaylı iş araçları
 //
-// Plan bölüm 11.1'deki tool listesinin tamamı: her araç salt okunur bir iş
+// Her araç salt okunur bir iş
 // sorusunu yanıtlar, daima TenantId filtresiyle çalışır ve yanıtında modelin
 // doğrudan kullanabileceği Türkçe bir "summary" taşır.
 

@@ -1,6 +1,6 @@
 namespace Accounting.Domain.Enums;
 
-/// <summary>Abonelik durumu (muhasebe.md bölüm 30).</summary>
+/// <summary>Abonelik durumu.</summary>
 public enum SubscriptionStatus
 {
     /// <summary>Ücretsiz deneme süresi içinde (tam plan özellikleri).</summary>
@@ -20,7 +20,7 @@ public enum SubscriptionStatus
 }
 
 /// <summary>
-/// Plan özellik anahtarları (muhasebe.md bölüm 29–30). Feature guard bu
+/// Plan özellik anahtarları. Feature guard bu
 /// anahtarlarla çalışır: core her planda vardır, diğerleri planın Features
 /// listesinde yer alıyorsa açıktır.
 /// </summary>
@@ -54,7 +54,7 @@ public static class PlanFeatures
     public const string Quotes = "quotes";
 }
 
-/// <summary>Plan kodları ve sabit kimlikleri — tohum veriyle hizalı (bölüm 29).</summary>
+/// <summary>Plan kodları ve sabit kimlikleri — tohum veriyle hizalı.</summary>
 public static class SubscriptionPlans
 {
     public const string StarterCode = "starter";

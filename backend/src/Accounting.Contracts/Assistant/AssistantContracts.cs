@@ -1,6 +1,6 @@
 namespace Accounting.Contracts.Assistant;
 
-/// <summary>AI asistana soru (muhasebe.md bölüm 11).</summary>
+/// <summary>AI asistana soru.</summary>
 public sealed record AskAssistantRequest(string Question);
 
 /// <summary>

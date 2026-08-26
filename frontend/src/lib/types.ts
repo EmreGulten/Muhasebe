@@ -38,7 +38,7 @@ export interface TenantResponse {
   joinedAtUtc: string;
 }
 
-// ---- Cari hesaplar (PHASE 2)
+// ---- Cari hesaplar
 
 export type PartyTypeDto = "Customer" | "Supplier" | "Both";
 export type ManualTransactionTypeDto = "OpeningBalance" | "Debit" | "Credit" | "Adjustment";
@@ -110,7 +110,7 @@ export interface PartyStatementResponse {
   items: PartyTransactionDto[];
 }
 
-// ---- Ürün / Stok (PHASE 3)
+// ---- Ürün / Stok
 
 export interface CategoryDto {
   id: string;
@@ -210,7 +210,7 @@ export interface CriticalStockItemDto {
   unitName: string | null;
 }
 
-// ---- Satış (PHASE 4)
+// ---- Satış
 
 export type SaleStatusDto = "Draft" | "Confirmed" | "PartiallyPaid" | "Paid" | "Cancelled";
 
@@ -275,7 +275,7 @@ export interface SaleResponse {
   payments: SalePaymentDto[];
 }
 
-// ---- Alış (PHASE 5)
+// ---- Alış
 
 export type PurchaseStatusDto = "Draft" | "Confirmed" | "PartiallyPaid" | "Paid" | "Cancelled";
 
@@ -340,7 +340,7 @@ export interface PurchaseResponse {
   payments: PurchasePaymentDto[];
 }
 
-// ---- Kasa / Banka (PHASE 6)
+// ---- Kasa / Banka
 
 export type AccountTypeDto = "Cash" | "Bank" | "CreditCard" | "VirtualPOS";
 
@@ -390,7 +390,7 @@ export interface TransferResponse {
   toBalance: number;
 }
 
-// ---- Gelir / Gider (PHASE 7)
+// ---- Gelir / Gider
 
 export type IncomeExpenseSideDto = "Income" | "Expense";
 
@@ -447,7 +447,7 @@ export interface IncomeExpenseSummaryResponse {
   categories: IncomeExpenseCategoryTotalDto[];
 }
 
-// ---- Raporlar (PHASE 8, muhasebe.md bölüm 3.1 + 25)
+// ---- Raporlar
 
 export interface DashboardDailyFlowDto {
   date: string;
@@ -562,7 +562,7 @@ export interface SalesReportResponse {
   byProduct: SalesByProductDto[];
 }
 
-// ---- AI Asistan (PHASE 9, bölüm 11)
+// ---- AI Asistan
 
 export interface AskAssistantResponse {
   answer: string;
@@ -576,7 +576,7 @@ export interface AiMessageDto {
   createdAtUtc: string;
 }
 
-// ---- Abonelik (PHASE 10, bölüm 29–31)
+// ---- Abonelik
 
 export interface SubscriptionPlanDto {
   code: string;

@@ -298,7 +298,7 @@ public sealed class InventoryTransactionConfiguration : IEntityTypeConfiguration
     }
 }
 
-// ---- Satış (PHASE 4)
+// ---- Satış
 
 public sealed class SaleConfiguration : IEntityTypeConfiguration<Sale>
 {
@@ -387,7 +387,7 @@ public sealed class SalePaymentConfiguration : IEntityTypeConfiguration<SalePaym
     }
 }
 
-/// <summary>Kasa/banka hesabı — PHASE 4 minimal (default "Kasa"), yönetimi PHASE 6.</summary>
+/// <summary>Kasa/banka hesabı — minimal (default "Kasa"), yönetimi .</summary>
 public sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
 {
     public void Configure(EntityTypeBuilder<Account> builder)
@@ -433,7 +433,7 @@ public sealed class AccountTransactionConfiguration : IEntityTypeConfiguration<A
     }
 }
 
-// ---- Alış (PHASE 5)
+// ---- Alış
 
 /// <summary>Alış belgesi — satış konfigürasyonunun aynası.</summary>
 public sealed class PurchaseConfiguration : IEntityTypeConfiguration<Purchase>
@@ -522,7 +522,7 @@ public sealed class PurchasePaymentConfiguration : IEntityTypeConfiguration<Purc
     }
 }
 
-// ---- Gelir / gider (PHASE 7)
+// ---- Gelir / gider
 
 /// <summary>Gelir/gider kategorisi — ad tenant ve tür içinde benzersizdir.</summary>
 public sealed class IncomeExpenseCategoryConfiguration : IEntityTypeConfiguration<IncomeExpenseCategory>
@@ -579,7 +579,7 @@ public sealed class IncomeExpenseRecordConfiguration : IEntityTypeConfiguration<
     }
 }
 
-/// <summary>AI asistan sohbet mesajları (bölüm 11, PHASE 9).</summary>
+/// <summary>AI asistan sohbet mesajları.</summary>
 public sealed class AiMessageConfiguration : IEntityTypeConfiguration<AiMessage>
 {
     public void Configure(EntityTypeBuilder<AiMessage> builder)
@@ -598,7 +598,7 @@ public sealed class AiMessageConfiguration : IEntityTypeConfiguration<AiMessage>
 }
 
 /// <summary>
-/// Abonelik planı kataloğu (muhasebe.md bölüm 29). Üç plan tohum veriyle
+/// Abonelik planı kataloğu. Üç plan tohum veriyle
 /// (HasData) gelir — kod ve sabit kimlikler Domain'de (SubscriptionPlans).
 /// </summary>
 public sealed class SubscriptionPlanConfiguration : IEntityTypeConfiguration<SubscriptionPlan>
@@ -659,7 +659,7 @@ public sealed class SubscriptionPlanConfiguration : IEntityTypeConfiguration<Sub
     }
 }
 
-/// <summary>İşletme abonelikleri (muhasebe.md bölüm 30).</summary>
+/// <summary>İşletme abonelikleri.</summary>
 public sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
 {
     public void Configure(EntityTypeBuilder<Subscription> builder)

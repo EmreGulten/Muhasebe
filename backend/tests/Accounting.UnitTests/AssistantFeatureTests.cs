@@ -25,10 +25,10 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 9 AI asistanı (muhasebe.md bölüm 11): sekiz onaylı aracın gerçek
+/// AI asistanı: sekiz onaylı aracın gerçek
 /// hareket verisiyle doğruluğu, offline sağlayıcı akışı, sohbet geçmişi,
 /// aylık kullanım limiti, tenant izolasyonu, izin matrisi ve validasyon.
-/// AI hiçbir zaman SQL üretmez — yalnızca bu araçlar çalışır (bölüm 11.1).
+/// AI hiçbir zaman SQL üretmez — yalnızca bu araçlar çalışır.
 /// </summary>
 public sealed class AssistantFeatureTests : IDisposable
 {
@@ -461,7 +461,7 @@ public sealed class AssistantFeatureTests : IDisposable
         owner.Activate();
         var scope = owner.Scope;
 
-        // Kayıt Pro denemesi açar → plan limiti 100 (bölüm 29–30).
+        // Kayıt Pro denemesi açar → plan limiti 100.
         // Bu ayın 99 kullanıcı sorusu tohumlanır: 100. soru geçer, 101. 429.
         var tenantId = scope.ServiceProvider.GetRequiredService<ICurrentTenant>().TenantId!.Value;
         var now = DateTime.UtcNow;

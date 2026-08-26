@@ -4,7 +4,7 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Gelir/gider kategorisi (muhasebe.md bölüm 8): "Kira", "Elektrik"... İlk
+/// Gelir/gider kategorisi: "Kira", "Elektrik"... İlk
 /// listelemede plandaki varsayılan kategoriler tenant'a eklenir. Ad tenant
 /// ve tür içinde benzersizdir ("Diğer" hem gelir hem gider tarafında olabilir).
 /// </summary>

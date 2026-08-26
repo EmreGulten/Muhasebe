@@ -1,6 +1,6 @@
 namespace Accounting.Application.Abstractions;
 
-// ---- AI asistan sağlayıcı soyutlaması (muhasebe.md bölüm 11, PHASE 9)
+// ---- AI asistan sağlayıcı soyutlaması
 //
 // AI hiçbir zaman SQL üretip çalıştırmaz: sağlayıcı yalnızca buradaki araç
 // çağrıları üzerinden backend'in onayladığı sorgulara ulaşır. Araçların
@@ -23,7 +23,7 @@ public sealed record AiChatRequest(
 
 /// <summary>
 /// AI sağlayıcı soyutlaması. Implementasyonlar (OpenAI uyumlu HTTP, offline)
-/// değiştirilebilir olmalıdır (muhasebe.md bölüm 16). Sağlayıcı, araç çağırma
+/// değiştirilebilir olmalıdır. Sağlayıcı, araç çağırma
 /// gerektiğinde executeTool temsilcisiyle onaylı aracı çalıştırır ve son yanıt
 /// metnini döndürür.
 /// </summary>

@@ -17,10 +17,10 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 7 gelir/gider özelliği: varsayılan kategori tohumlaması, kategori
+/// gelir/gider özelliği: varsayılan kategori tohumlaması, kategori
 /// CRUD'u, kaydın kasa hareketiyle atomik yazımı (gelir +/gider −), tip
 /// uyumsuzluğu denetimi, iptalin ters hareketi, liste filtreleri, dönem
-/// özeti, tenant izolasyonu ve izin matrisi (muhasebe.md bölüm 8, 23, 24, 25).
+/// özeti, tenant izolasyonu ve izin matrisi.
 /// </summary>
 public sealed class IncomeExpenseFeatureTests : IDisposable
 {
@@ -75,7 +75,7 @@ public sealed class IncomeExpenseFeatureTests : IDisposable
 
         var first = await ListCategoriesAsync(scope);
 
-        // Plan bölüm 8: 13 gider + 4 gelir; "Diğer" iki tarafta da bulunur.
+        // Varsayılan 13 gider + 4 gelir; "Diğer" iki tarafta da bulunur.
         Assert.Equal(17, first.Count);
         Assert.Equal(13, first.Count(c => c.Type == "Expense"));
         Assert.Equal(4, first.Count(c => c.Type == "Income"));

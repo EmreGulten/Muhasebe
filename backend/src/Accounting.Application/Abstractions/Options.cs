@@ -26,7 +26,7 @@ public sealed class AppOptions
 }
 
 /// <summary>
-/// AI asistan yapılandırması (appsettings "Ai" bölümü, muhasebe.md bölüm 11).
+/// AI asistan yapılandırması (appsettings "Ai" bölümü).
 /// ApiKey boşsa asistan offline moda düşer: anahtar kelime eşleştirmesiyle
 /// yalnızca onaylı araçları çağırır, dış ağa hiç çıkmaz.
 /// </summary>
@@ -43,7 +43,7 @@ public sealed class AiOptions
     /// <summary>Chat completions modeli.</summary>
     public string Model { get; init; } = "gpt-4o-mini";
 
-    /// <summary>İşletme başına aylık soru limiti (PHASE 9 kullanım limiti).</summary>
+    /// <summary>İşletme başına aylık soru limiti.</summary>
     public int MonthlyQuestionLimit { get; init; } = 100;
 }
 

@@ -25,7 +25,7 @@ public sealed record SubscriptionSnapshot(
 }
 
 /// <summary>
-/// Feature guard (muhasebe.md bölüm 30): plana göre özellik ve kota kontrolü.
+/// Feature guard: plana göre özellik ve kota kontrolü.
 /// Uygulama katmanında, handler'ların başında çağrılır.
 /// </summary>
 public interface IFeatureGuard
@@ -41,7 +41,7 @@ public interface IFeatureGuard
 }
 
 /// <summary>
-/// Ödeme sağlayıcısı soyutlaması (muhasebe.md bölüm 31). Sağlayıcı domain'e
+/// Ödeme sağlayıcısı soyutlaması. Sağlayıcı domain'e
 /// bağlanmaz; iyzico/PayTR/Stripe bu arayüzle arkasına takılır. MVP'de
 /// FakePaymentProvider kayıtlıdır — plan değişimi doğrudan yapılır.
 /// </summary>

@@ -15,7 +15,7 @@ internal static class ReportQueries
 
     /// <summary>
     /// Raporlara giren satışlar: onaylanmış belgeler (Confirmed/PartiallyPaid/Paid).
-    /// Taslak henüz gerçekleşmemiş, iptal ise dengelemiştir (bölüm 6, 23).
+    /// Taslak henüz gerçekleşmemiş, iptal ise dengelemiştir.
     /// </summary>
     public static readonly SaleStatus[] ConfirmedStatuses =
         [SaleStatus.Confirmed, SaleStatus.PartiallyPaid, SaleStatus.Paid];
@@ -58,7 +58,7 @@ internal static class ReportQueries
 }
 
 /// <summary>
-/// Dashboard (muhasebe.md bölüm 3.1, 25): 10 KPI kartı ve beş grafik.
+/// Dashboard: 10 KPI kartı ve beş grafik.
 /// Tüm sorgular salt okunur; ayrıntılar rapor modülündedir, dashboard sadedir.
 /// </summary>
 public sealed class GetDashboardHandler(
@@ -112,7 +112,7 @@ public sealed class GetDashboardHandler(
             .Take(5)
             .ToList();
 
-        // Kasa/banka toplamları: hesap hareketlerinin işaretli toplamı (bölüm 9).
+        // Kasa/banka toplamları: hesap hareketlerinin işaretli toplamı.
         var accounts = db.Accounts.AsNoTracking().Where(a => a.TenantId == tenantId);
         var accountTotals = await (
             from t in db.AccountTransactions.AsNoTracking().Where(t => t.TenantId == tenantId)
@@ -245,7 +245,7 @@ public sealed class GetDashboardHandler(
 }
 
 /// <summary>
-/// Alacaklar raporu (muhasebe.md bölüm 25): pozitif bakiyeli müşteriler ve
+/// Alacaklar raporu: pozitif bakiyeli müşteriler ve
 /// müşteri bazlı gecikmiş alacaklar. Satıcılar borç raporunun konusudur.
 /// </summary>
 public sealed class GetReceivablesReportHandler(
@@ -287,7 +287,7 @@ public sealed class GetReceivablesReportHandler(
 }
 
 /// <summary>
-/// Stok raporu (muhasebe.md bölüm 25): tüm stoklu ürünler (pasifler dahil),
+/// Stok raporu: tüm stoklu ürünler (pasifler dahil),
 /// eldeki miktar ve maliyet değeri (eldeki × alış fiyatı). Hizmetler yoktur.
 /// </summary>
 public sealed class GetStockReportHandler(
@@ -297,7 +297,7 @@ public sealed class GetStockReportHandler(
     {
         var tenantId = ReportQueries.RequireTenantId(currentTenant);
 
-        // Stok raporu stok modülüne bağlı (bölüm 29–30).
+        // Stok raporu stok modülüne bağlı.
         await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Stock, cancellationToken);
 
         var stocks = db.InventoryTransactions
@@ -342,7 +342,7 @@ public sealed class GetStockReportHandler(
 }
 
 /// <summary>
-/// Satış raporu (muhasebe.md bölüm 25): dönem toplamları (adet, tutar, KDV,
+/// Satış raporu: dönem toplamları (adet, tutar, KDV,
 /// ortalama) ve gün / müşteri / ürün bazlı dökümler. Varsayılan dönem içinde
 /// bulunulan aydır; taslak ve iptaller girmez.
 /// </summary>

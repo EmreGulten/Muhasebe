@@ -4,10 +4,10 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Gelir ya da gider kaydı (muhasebe.md bölüm 8). Oluşturulduğunda ilgili
+/// Gelir ya da gider kaydı. Oluşturulduğunda ilgili
 /// kasa/banka hesabına işaretli hareket yazar (gelir +, gider −); kayıt ve
-/// hareket tek transaction'da yazılır (bölüm 24). Defter modeli: değiştirilemez
-/// ve silinemez; düzeltme iptal (ters hareket) ile yapılır (bölüm 23).
+/// hareket tek transaction'da yazılır. Defter modeli: değiştirilemez
+/// ve silinemez; düzeltme iptal (ters hareket) ile yapılır.
 /// </summary>
 public class IncomeExpenseRecord : ITenantScoped, IHasTimestamps
 {
@@ -36,7 +36,7 @@ public class IncomeExpenseRecord : ITenantScoped, IHasTimestamps
     /// <summary>Belge/fatura numarası (serbest metin).</summary>
     public string? DocumentNumber { get; set; }
 
-    /// <summary>Makbuz/fatura görseli — MVP'de yükleme yok, alan hazır (bölüm 8).</summary>
+    /// <summary>Makbuz/fatura görseli — MVP'de yükleme yok, alan hazır.</summary>
     public string? AttachmentUrl { get; set; }
 
     public IncomeExpenseStatus Status { get; set; } = IncomeExpenseStatus.Active;

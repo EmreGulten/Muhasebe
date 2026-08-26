@@ -23,7 +23,7 @@ internal static class ProductQueries
             .Select(t => t.Quantity)
             .SumAsync(cancellationToken);
 
-    /// <summary>Kritik stok kuralı: eşik > 0 ve güncel stok eşiğin altında (muhasebe.md 5.3).</summary>
+    /// <summary>Kritik stok kuralı: eşik > 0 ve güncel stok eşiğin altında.</summary>
     public static bool IsCritical(decimal minimumStock, decimal currentStock) =>
         minimumStock > 0 && currentStock <= minimumStock;
 
@@ -161,7 +161,7 @@ public sealed class UpdateProductHandler(IApplicationDbContext db, ICurrentTenan
 
 /// <summary>
 /// Ürün silme. Stok hareketi olan ürün silinemez — finansal/stok kayıt zinciri
-/// korunur (muhasebe.md bölüm 23); pasifleştirme önerilir.
+/// korunur; pasifleştirme önerilir.
 /// </summary>
 public sealed class DeleteProductHandler(IApplicationDbContext db, ICurrentTenant currentTenant)
 {

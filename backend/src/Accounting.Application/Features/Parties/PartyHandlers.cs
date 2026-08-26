@@ -144,7 +144,7 @@ public sealed class UpdatePartyHandler(IApplicationDbContext db, ICurrentTenant 
 
 /// <summary>
 /// Cari kartını soft-delete ile kaldırır. Hareketi olan cari silinemez —
-/// finansal kayıt zinciri korunur (muhasebe.md bölüm 23); pasifleştirme önerilir.
+/// finansal kayıt zinciri korunur; pasifleştirme önerilir.
 /// </summary>
 public sealed class DeletePartyHandler(IApplicationDbContext db, ICurrentTenant currentTenant)
 {

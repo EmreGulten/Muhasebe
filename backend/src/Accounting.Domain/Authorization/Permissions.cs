@@ -2,7 +2,7 @@ using Accounting.Domain.Enums;
 
 namespace Accounting.Domain.Authorization;
 
-/// <summary>Sistemdeki izin sabitleri (muhasebe.md bölüm 14).</summary>
+/// <summary>Sistemdeki izin sabitleri.</summary>
 public static class Permissions
 {
     // Satış

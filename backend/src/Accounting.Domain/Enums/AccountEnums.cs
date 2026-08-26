@@ -1,7 +1,7 @@
 namespace Accounting.Domain.Enums;
 
 /// <summary>
-/// Kasa/banka hesabı türü (muhasebe.md bölüm 9): kasa, banka, kredi kartı,
+/// Kasa/banka hesabı türü: kasa, banka, kredi kartı,
 /// sanal POS.
 /// </summary>
 public enum AccountType

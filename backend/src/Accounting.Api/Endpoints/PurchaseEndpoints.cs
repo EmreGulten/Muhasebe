@@ -6,7 +6,7 @@ using Accounting.Domain.Authorization;
 
 namespace Accounting.Api.Endpoints;
 
-/// <summary>Alış uç noktaları (muhasebe.md bölüm 7, 23, 24).</summary>
+/// <summary>Alış uç noktaları.</summary>
 public static class PurchaseEndpoints
 {
     public static void MapPurchaseEndpoints(this IEndpointRouteBuilder app)

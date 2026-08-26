@@ -28,8 +28,11 @@ next-env.d.ts
 .DS_Store
 Thumbs.db
 
-# ---- Claude Code (makineye yerel ayarlar) ----
+# ---- Yerel geliştirme araçları ve ürün notları ----
 .claude/
+.agents/
+.local-notes/
+frontend/AGENTS.md
 
 # ---- Docker ----
 postgres-data/

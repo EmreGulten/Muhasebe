@@ -14,9 +14,9 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 2 cari özelliği: kart CRUD, açılış bakiyesi hareketi, bakiye =
+/// cari özelliği: kart CRUD, açılış bakiyesi hareketi, bakiye =
 /// Σborç − Σalacak, ekstre çalışan bakiyesi, hareketli cari silinemez,
-/// tenant izolasyonu ve rol izin matrisi (muhasebe.md bölüm 4 ve 23).
+/// tenant izolasyonu ve rol izin matrisi.
 /// </summary>
 public sealed class PartyFeatureTests : IDisposable
 {
@@ -255,7 +255,7 @@ public sealed class PartyFeatureTests : IDisposable
         Assert.Equal(600m, last.Balance);
     }
 
-    // ---- Silme kuralları (bölüm 23: finansal kayıt zinciri korunur)
+    // ---- Silme kuralları
 
     [Fact]
     public async Task DeleteParty_WithTransactions_ThrowsConflict()

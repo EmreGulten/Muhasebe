@@ -1,8 +1,7 @@
 namespace Accounting.Domain.Enums;
 
 /// <summary>
-/// Cari türü. "Both" hem müşteri hem tedarikçi olan taraflar içindir
-/// (muhasebe.md bölüm 4.1).
+/// Cari türü. "Both" hem müşteri hem tedarikçi olan taraflar içindir.
 /// </summary>
 public enum PartyType
 {
@@ -12,10 +11,10 @@ public enum PartyType
 }
 
 /// <summary>
-/// Cari hareket türü (muhasebe.md bölüm 4.2).
+/// Cari hareket türü.
 /// Satış/Tahsilat/Alış/Ödeme türleri ileride ilgili modüller
 /// (satış onayı, kasa hareketi) tarafından otomatik üretilir;
-/// Phase 2'de yalnızca manuel türler API'den kabul edilir.
+/// 'de yalnızca manuel türler API'den kabul edilir.
 /// </summary>
 public enum PartyTransactionType
 {

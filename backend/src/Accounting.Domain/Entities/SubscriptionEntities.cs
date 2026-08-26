@@ -4,8 +4,8 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Abonelik planı (muhasebe.md bölüm 29) — global katalog tablosu, TenantId'siz.
-/// Üç plan tohum veriyle gelir (bölüm 29 fiyatlandırması); kod üzerinden
+/// Abonelik planı — global katalog tablosu, TenantId'siz.
+/// Üç plan tohum veriyle gelir; kod üzerinden
 /// değişmez, limitler ve özellik anahtarları burada tutulur.
 /// </summary>
 public class SubscriptionPlan
@@ -44,7 +44,7 @@ public class SubscriptionPlan
 }
 
 /// <summary>
-/// İşletmenin aboneliği (muhasebe.md bölüm 30). Bir işletmenin en fazla bir
+/// İşletmenin aboneliği. Bir işletmenin en fazla bir
 /// geçerli aboneliği vardır; yeni kayıt Pro planında deneme olarak açılır.
 /// Abonelik kaydı yoksa işletme core özelliklerle çalışır (başlangıç varsayılanı).
 /// </summary>

@@ -1,7 +1,7 @@
 namespace Accounting.Domain.Enums;
 
 /// <summary>
-/// Stok hareket türleri (muhasebe.md bölüm 5.2).
+/// Stok hareket türleri.
 /// Alış/Satış hareketleri ilgili modüller tarafından üretilir;
 /// kalan türler kullanıcı tarafından manuel girilebilir.
 /// </summary>

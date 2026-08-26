@@ -1,6 +1,6 @@
 namespace Accounting.Contracts.Subscription;
 
-/// <summary>Abonelik planı kartı (muhasebe.md bölüm 29).</summary>
+/// <summary>Abonelik planı kartı.</summary>
 public sealed record SubscriptionPlanDto(
     string Code,
     string Name,

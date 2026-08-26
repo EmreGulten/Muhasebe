@@ -19,10 +19,10 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 6 kasa/banka özelliği: hesap türleri, açılış bakiyesi, manuel
+/// kasa/banka özelliği: hesap türleri, açılış bakiyesi, manuel
 /// giriş/çıkış, hesaplar arası transfer, ekstre çalışan bakiyesi,
 /// satış/alış ödemelerinin kasaya akışı, tenant izolasyonu ve izin
-/// matrisi (muhasebe.md bölüm 9, 23, 24).
+/// matrisi.
 /// </summary>
 public sealed class AccountFeatureTests : IDisposable
 {

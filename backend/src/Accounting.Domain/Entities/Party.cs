@@ -4,7 +4,7 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Cari taraf — müşteri ve/veya tedarikçi (muhasebe.md bölüm 4.1).
+/// Cari taraf — müşteri ve/veya tedarikçi.
 /// Tek yapı hem müşteri hem tedarikçiyi karşılar; Type ayırt eder.
 /// </summary>
 public class Party : ITenantScoped, ISoftDeletable, IHasTimestamps

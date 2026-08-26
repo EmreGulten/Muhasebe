@@ -18,9 +18,9 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 5 alış özelliği: stok girişi + tedarikçi borcu + kasadan ödeme
+/// alış özelliği: stok girişi + tedarikçi borcu + kasadan ödeme
 /// zinciri, iptal ters hareketleri, ödeme aşırı reddi, tenant izolasyonu
-/// ve izin matrisi (muhasebe.md bölüm 7, 23, 24).
+/// ve izin matrisi.
 /// </summary>
 public sealed class PurchaseFeatureTests : IDisposable
 {

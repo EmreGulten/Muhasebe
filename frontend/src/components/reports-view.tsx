@@ -31,7 +31,7 @@ function defaultFrom(): string {
   return isoToDateInput(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString());
 }
 
-/** Raporlar (bölüm 25): alacaklar, stok ve satış raporu — tümü salt okunur. */
+/** Raporlar: alacaklar, stok ve satış raporu — tümü salt okunur. */
 export function ReportsView() {
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(() => isoToDateInput(new Date().toISOString()));

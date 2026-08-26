@@ -6,7 +6,7 @@ using Accounting.Domain.Authorization;
 
 namespace Accounting.Api.Endpoints;
 
-/// <summary>AI asistan uç noktaları (muhasebe.md bölüm 11, PHASE 9).</summary>
+/// <summary>AI asistan uç noktaları.</summary>
 public static class AssistantEndpoints
 {
     public static void MapAssistantEndpoints(this IEndpointRouteBuilder app)

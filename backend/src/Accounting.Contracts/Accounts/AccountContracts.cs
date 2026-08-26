@@ -66,8 +66,8 @@ public sealed record AccountStatementResponse(
     IReadOnlyList<AccountTransactionDto> Items);
 
 /// <summary>
-/// Hesaplar arası transfer — tek işlemde çıkış + giriş çifti yazar
-/// (bölüm 9). Amount pozitiftir; kaynak hesaptan −amount, hedefe +amount.
+/// Hesaplar arası transfer tek işlemde çıkış ve giriş çifti yazar.
+/// Amount pozitiftir; kaynak hesaptan −amount, hedefe +amount.
 /// </summary>
 public sealed record TransferRequest(
     Guid FromAccountId,

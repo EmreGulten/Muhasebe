@@ -29,7 +29,7 @@ public sealed class UpdateIncomeExpenseCategoryValidator : AbstractValidator<Upd
     }
 }
 
-/// <summary>Gelir/gider kaydı doğrulaması (muhasebe.md bölüm 8).</summary>
+/// <summary>Gelir/gider kaydı doğrulaması.</summary>
 public sealed class CreateIncomeExpenseRecordValidator : AbstractValidator<CreateIncomeExpenseRecordRequest>
 {
     public CreateIncomeExpenseRecordValidator()

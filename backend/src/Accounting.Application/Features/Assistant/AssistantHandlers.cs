@@ -17,7 +17,7 @@ internal static class AssistantQueries
             ?? throw new ConflictException("Aktif işletme bağlamı bulunamadı. X-Tenant-Id başlığını gönderin.");
 }
 
-/// <summary>Sistem yönergesi — model araç dışından rakam üretmesin (bölüm 11.1).</summary>
+/// <summary>Sistem yönergesi — model araç dışından rakam üretmesin.</summary>
 internal static class AssistantPrompts
 {
     public const string System =
@@ -30,7 +30,7 @@ internal static class AssistantPrompts
 }
 
 /// <summary>
-/// AI asistan sorusu (muhasebe.md bölüm 11, PHASE 9): sohbet geçmişini bağlam
+/// AI asistan sorusu: sohbet geçmişini bağlam
 /// olarak verir, sağlayıcının onaylı araç çağrılarını yürütür ve soru + yanıt
 /// çiftini geçmişe yazar. AI hiçbir zaman SQL üretip çalıştırmaz — araç kayıt
 /// defterindeki isimler dışındaki çağrılar reddedilir.
@@ -55,10 +55,10 @@ public sealed class AskAssistantHandler(
             ?? throw new AppException("Soruyu soran kullanıcı çözülemedi.", 401, "Oturum gerekli");
         var question = request.Question.Trim();
 
-        // Plan kısıtı (PHASE 10, bölüm 30): AI özelliği plana bağlı.
+        // Plan kısıtı: AI özelliği plana bağlı.
         await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.AiAssistant, cancellationToken);
 
-        // Kullanım limiti (PHASE 9): plan limiti öncelikli, yoksa genel varsayılan.
+        // Kullanım limiti: plan limiti öncelikli, yoksa genel varsayılan.
         var monthlyLimit = await featureGuard.AiMonthlyLimitAsync(
             tenantId, aiOptions.Value.MonthlyQuestionLimit, cancellationToken);
         var today = Dates.ToUtcDate(timeProvider.GetUtcNow().UtcDateTime);
@@ -94,7 +94,7 @@ public sealed class AskAssistantHandler(
             .ToList();
 
         // Sağlayıcının araç çağrılarını burada yürütülür: yalnızca kayıt defterindeki
-        // araçlar çalışabilir, hepsi TenantId filtresiyle (bölüm 11.1).
+        // araçlar çalışabilir, hepsi TenantId filtresiyle.
         async Task<string> ExecuteToolAsync(AiToolCall call, CancellationToken ct)
         {
             var tool = tools.FirstOrDefault(t => string.Equals(t.Name, call.Name, StringComparison.Ordinal));

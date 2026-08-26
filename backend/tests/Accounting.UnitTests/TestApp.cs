@@ -76,7 +76,7 @@ public sealed class TestApp : IDisposable
         services.AddSingleton<IOptions<AiOptions>>(_ => Options.Create(new AiOptions()));
         services.AddSingleton<IAiProvider, OfflineAiProvider>();
 
-        // Abonelik (PHASE 10): varsayılan ayarlar (14 gün Pro denemesi) + fake ödeme.
+        // Abonelik: varsayılan ayarlar (14 gün Pro denemesi) + fake ödeme.
         services.AddSingleton<IOptions<SubscriptionOptions>>(_ => Options.Create(new SubscriptionOptions()));
         services.AddSingleton<IPaymentProvider, FakePaymentProvider>();
 

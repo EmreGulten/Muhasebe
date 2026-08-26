@@ -1,6 +1,6 @@
 namespace Accounting.Domain.Enums;
 
-/// <summary>Alış belgesi durum makinesi — satışla aynı akış (muhasebe.md bölüm 23).</summary>
+/// <summary>Alış belgesi durum makinesi — satışla aynı akış.</summary>
 public enum PurchaseStatus
 {
     Draft = 1,

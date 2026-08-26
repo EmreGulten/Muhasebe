@@ -215,7 +215,7 @@ public sealed class DeleteUnitHandler(IApplicationDbContext db, ICurrentTenant c
 
 /// <summary>
 /// Depo listesi. İlk çağrıda tenant'ın varsayılan deposu ("Ana Depo") yoksa
-/// oluşturulur — MVP tek depoyla başlar (muhasebe.md bölüm 5.2).
+/// oluşturulur — MVP tek depoyla başlar.
 /// </summary>
 public sealed class ListWarehousesHandler(IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
 {
@@ -278,7 +278,7 @@ public sealed class CreateWarehouseHandler(
             request = request with { IsDefault = true };
         }
 
-        // Depo kotası (bölüm 30): ilk depo hariç plan üst sınırıyla sınırlı.
+        // Depo kotası: ilk depo hariç plan üst sınırıyla sınırlı.
         var snapshot = await featureGuard.ResolveAsync(tenantId, cancellationToken);
         var maxWarehouses = snapshot.Plan.MaxWarehouses;
         if (maxWarehouses >= 0)

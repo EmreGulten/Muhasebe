@@ -8,8 +8,8 @@ namespace Accounting.Infrastructure.Persistence.Migrations
     public partial class BackfillProTrialForExistingTenants : Migration
     {
         /// <summary>
-        /// PHASE 10 öncesi kaydolmuş işletmeler (abonelik satırı olmayanlar) 14 günlük
-        /// Pro denemesiyle sisteme davet edilir — yeni kayıtlarla aynı deneyim (bölüm 30).
+        /// öncesi kaydolmuş işletmeler (abonelik satırı olmayanlar) 14 günlük
+        /// Pro denemesiyle sisteme davet edilir — yeni kayıtlarla aynı deneyim.
         /// </summary>
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

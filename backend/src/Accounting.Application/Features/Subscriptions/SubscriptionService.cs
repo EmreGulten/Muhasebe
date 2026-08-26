@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 namespace Accounting.Application.Features.Subscriptions;
 
 /// <summary>
-/// Feature guard uygulaması (muhasebe.md bölüm 30): işletmenin aboneliğini
+/// Feature guard uygulaması: işletmenin aboneliğini
 /// çözümler, plana göre özellik/kota kontrolü yapar. Aboneliği olmayan ya da
 /// dönemi bitmiş işletmeler core özelliklerle çalışır (başlangıç varsayılanı).
 /// </summary>

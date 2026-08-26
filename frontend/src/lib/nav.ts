@@ -21,10 +21,7 @@ export interface NavItem {
   enabled: boolean;
 }
 
-/**
- * Plan bölüm 27'deki ana gezinme. Phase 1'de yalnızca Dashboard aktif;
- * diğer modüller sonraki fazlarla geldiğinde açılır.
- */
+/** Uygulamanın masaüstü ve mobil görünümde kullandığı ana gezinme öğeleri. */
 export const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, enabled: true },
   { label: "Satışlar", href: "/sales", icon: ShoppingCart, enabled: true },

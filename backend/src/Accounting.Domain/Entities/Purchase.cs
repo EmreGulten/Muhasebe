@@ -4,7 +4,7 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Alış belgesi (muhasebe.md bölüm 7). Satışın ayna görüntüsü: onay tek
+/// Alış belgesi. Satışın ayna görüntüsü: onay tek
 /// transaction'da stok girişi + tedarikçi borcu (+ varsa anlık ödeme) üretir.
 /// Tutarlar numeric(18,2).
 /// </summary>

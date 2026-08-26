@@ -5,7 +5,7 @@ using Accounting.Domain.Authorization;
 
 namespace Accounting.Api.Endpoints;
 
-/// <summary>Rapor uç noktaları (muhasebe.md bölüm 3.1, 25). Tümü salt okunur.</summary>
+/// <summary>Rapor uç noktaları. Tümü salt okunur.</summary>
 public static class ReportEndpoints
 {
     public static void MapReportEndpoints(this IEndpointRouteBuilder app)
@@ -17,7 +17,7 @@ public static class ReportEndpoints
                 CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(cancellationToken)))
             .WithName("GetDashboard")
-            .WithSummary("Dashboard — 10 KPI kartı ve beş grafik (bölüm 3.1)")
+            .WithSummary("Dashboard — 10 KPI kartı ve beş grafik")
             .RequireTenant()
             .RequirePermission(Permissions.ReportsView);
 
@@ -26,7 +26,7 @@ public static class ReportEndpoints
                 CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(cancellationToken)))
             .WithName("GetReceivablesReport")
-            .WithSummary("Alacaklar raporu — borçlu müşteriler ve gecikmiş alacaklar (bölüm 25)")
+            .WithSummary("Alacaklar raporu — borçlu müşteriler ve gecikmiş alacaklar")
             .RequireTenant()
             .RequirePermission(Permissions.ReportsView);
 
@@ -35,7 +35,7 @@ public static class ReportEndpoints
                 CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(cancellationToken)))
             .WithName("GetStockReport")
-            .WithSummary("Stok raporu — eldeki miktar, maliyet değeri ve kritik stok (bölüm 25)")
+            .WithSummary("Stok raporu — eldeki miktar, maliyet değeri ve kritik stok")
             .RequireTenant()
             .RequirePermission(Permissions.ReportsView);
 
@@ -46,7 +46,7 @@ public static class ReportEndpoints
                 CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(from, to, cancellationToken)))
             .WithName("GetSalesReport")
-            .WithSummary("Satış raporu — dönem toplamları ve gün/müşteri/ürün dökümü (bölüm 25)")
+            .WithSummary("Satış raporu — dönem toplamları ve gün/müşteri/ürün dökümü")
             .RequireTenant()
             .RequirePermission(Permissions.ReportsView);
     }

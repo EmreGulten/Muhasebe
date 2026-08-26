@@ -142,7 +142,7 @@ public sealed class CreatePurchaseHandler(
     {
         var tenantId = PurchaseQueries.RequireTenantId(currentTenant);
 
-        // Alış modülü plana bağlı (bölüm 29–30): Başlangıç planında kapalı.
+        // Alış modülü plana bağlı: Başlangıç planında kapalı.
         await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Purchases, cancellationToken);
 
         var partyId = await ResolvePartyAsync(db, tenantId, request.PartyId, cancellationToken);
@@ -241,7 +241,7 @@ public sealed class UpdatePurchaseHandler(
     }
 }
 
-/// <summary>Taslak silme. Onaylı belge silinemez — iptal edilir (muhasebe.md bölüm 23).</summary>
+/// <summary>Taslak silme. Onaylı belge silinemez — iptal edilir.</summary>
 public sealed class DeletePurchaseHandler(IApplicationDbContext db, ICurrentTenant currentTenant)
 {
     public async Task HandleAsync(Guid purchaseId, CancellationToken cancellationToken)

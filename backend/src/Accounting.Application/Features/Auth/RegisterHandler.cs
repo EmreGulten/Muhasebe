@@ -66,8 +66,7 @@ public sealed class RegisterHandler(
 
         await db.SaveChangesAsync(cancellationToken);
 
-        // Yeni işletme deneme aboneliğiyle açılır (muhasebe.md bölüm 30:
-        // SubscriptionOptions.TrialPlanCode planında TrialDays gün).
+        // Yeni işletme, yapılandırılan plan ve süreyle deneme aboneliğine başlar.
         await subscriptions.StartTrialAsync(tenant.Id, cancellationToken);
 
         var (accessToken, accessTokenExpiresAt) = tokenService.CreateAccessToken(user);

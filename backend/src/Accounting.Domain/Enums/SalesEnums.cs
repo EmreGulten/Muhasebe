@@ -1,7 +1,7 @@
 namespace Accounting.Domain.Enums;
 
 /// <summary>
-/// Satış belgesi durumu (muhasebe.md bölüm 6). Draft düzenlenebilir;
+/// Satış belgesi durumu. Draft düzenlenebilir;
 /// onaydan sonra belge değiştirilemez, düzeltme iptal + yeni belge ile yapılır.
 /// Ödeme durumu (Confirmed/PartiallyPaid/Paid) tahsilat toplamından türetilir.
 /// </summary>

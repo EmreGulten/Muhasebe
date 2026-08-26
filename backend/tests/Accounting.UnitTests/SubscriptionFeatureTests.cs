@@ -24,7 +24,7 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 10 abonelik sistemi (muhasebe.md bölüm 29–31): plan kataloğu,
+/// abonelik sistemi: plan kataloğu,
 /// kayıtta deneme, feature guard (stok / alış / AI), depo kotası, plan
 /// değiştirme ve dönemi biten aboneliğin core'a düşmesi.
 /// </summary>

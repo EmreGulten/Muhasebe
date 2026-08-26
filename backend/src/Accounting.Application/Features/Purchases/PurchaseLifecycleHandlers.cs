@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Accounting.Application.Features.Purchases;
 
 /// <summary>
-/// Alış onayı (muhasebe.md bölüm 7 ve 24). Tek SaveChanges — dolayısıyla tek
+/// Alış onayı. Tek SaveChanges — dolayısıyla tek
 /// transaction — içinde: stok girişi (hizmet hariç), tedarikçili alışta cari
 /// borç (biz borçlanırız — alacak), istenirse anlık ödeme (kasadan çıkış +
 /// cari borç düşümü). Onaydan sonra belge değiştirilemez.
@@ -24,7 +24,7 @@ public sealed class ConfirmPurchaseHandler(
     {
         var tenantId = PurchaseQueries.RequireTenantId(currentTenant);
 
-        // Alış modülü plana bağlı (bölüm 29–30).
+        // Alış modülü plana bağlı.
         await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Purchases, cancellationToken);
 
         var purchase = await PurchaseQueries.FindPurchaseAsync(db, tenantId, purchaseId, cancellationToken)
@@ -170,7 +170,7 @@ public sealed class ConfirmPurchaseHandler(
 }
 
 /// <summary>
-/// Alış iptali (muhasebe.md bölüm 23). Onaylı belgeyi ters hareketlerle
+/// Alış iptali. Onaylı belgeyi ters hareketlerle
 /// denkleştirir: stok geri düşülür, tedarikçi borcu ve ödemelerin cari borcu
 /// ters işaretle kapanır, kasa çıkışları iade edilir. Kayıtlar silinmez;
 /// Cancelled terminal durumdur. Tek SaveChanges = tek transaction.
@@ -241,8 +241,8 @@ public sealed class CancelPurchaseHandler(IApplicationDbContext db, ICurrentTena
         }
 
         // 3) Ödemelerin tersine çevrilmesi: kasa çıkışı geri alınır ve tedarikçi
-        // cari borcu da ters işaretle döner (bölüm 23 — her hareket kendi
-        // tersini alır; rapor toplamları otomatik sıfırlanır).
+        // cari borcu da ters işaretle döner. Her hareket kendi tersini aldığı için
+        // rapor toplamları otomatik sıfırlanır.
         foreach (var payment in purchase.Payments)
         {
             db.AccountTransactions.Add(new AccountTransaction

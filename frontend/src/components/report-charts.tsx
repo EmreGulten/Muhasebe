@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * CSS-only grafikler (PHASE 8, plan bölüm 3.1): grafik kütüphanesi eklenmez —
+ * CSS-only grafikler: grafik kütüphanesi eklenmez —
  * sütun yükseklikleri yüzde, etiketler flex ile çizilir. Veri yoksa grafik
  * sıfır yükseklikte durur, yer kaplamaz.
  */

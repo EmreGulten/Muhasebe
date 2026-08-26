@@ -3,8 +3,8 @@ using Accounting.Domain.Common;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Depo. MVP tek depoyla başlar; veri modeli çoklu depoya hazırdır
-/// (muhasebe.md bölüm 5.2). Her tenant'ta bir varsayılan depo bulunur.
+/// Depo. MVP tek depoyla başlar; veri modeli çoklu depoya hazırdır.
+/// Her tenant'ta bir varsayılan depo bulunur.
 /// </summary>
 public class Warehouse : ITenantScoped, ISoftDeletable, IHasTimestamps
 {

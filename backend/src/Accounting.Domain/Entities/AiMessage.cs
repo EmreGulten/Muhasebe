@@ -4,7 +4,7 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// AI asistan sohbet mesajı (muhasebe.md bölüm 11, PHASE 9). Kullanıcı soruları
+/// AI asistan sohbet mesajı. Kullanıcı soruları
 /// ve asistan yanıtları işletme (tenant) + kullanıcı bazında saklanır; sohbet
 /// geçmişi sonraki sorulara bağlam sağlar. Mesajlar değiştirilemez.
 /// </summary>

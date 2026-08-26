@@ -18,7 +18,7 @@ public sealed record DashboardProfitableProductDto(
 public sealed record DashboardTopDebtorDto(Guid PartyId, string PartyName, decimal Balance);
 
 /// <summary>
-/// Dashboard (muhasebe.md bölüm 3.1): işletmenin güncel durumu tek ekranda —
+/// Dashboard: işletmenin güncel durumu tek ekranda —
 /// 10 KPI kartı ve beş grafik. Sade tutulur; ayrıntı rapor modülündedir.
 /// </summary>
 public sealed record DashboardResponse(
@@ -46,7 +46,7 @@ public sealed record ReceivableRowDto(
     decimal Balance,
     decimal OverdueAmount);
 
-/// <summary>Alacaklar raporu (bölüm 25): borçlu müşteriler ve gecikmiş alacaklar.</summary>
+/// <summary>Alacaklar raporu: borçlu müşteriler ve gecikmiş alacaklar.</summary>
 public sealed record ReceivablesReportResponse(
     IReadOnlyList<ReceivableRowDto> Items,
     decimal TotalReceivable,
@@ -63,7 +63,7 @@ public sealed record StockRowDto(
     bool IsCritical,
     decimal StockValue);
 
-/// <summary>Stok raporu (bölüm 25): durum, kritik stok ve toplam değer.</summary>
+/// <summary>Stok raporu: durum, kritik stok ve toplam değer.</summary>
 public sealed record StockReportResponse(
     IReadOnlyList<StockRowDto> Items,
     decimal TotalValue,
@@ -78,7 +78,7 @@ public sealed record SalesByProductDto(Guid ProductId, string ProductName, decim
 /// <summary>Gün bazlı satış — grafik için.</summary>
 public sealed record SalesByDayDto(DateTime Date, int Count, decimal Total);
 
-/// <summary>Satış raporu (bölüm 25): dönem toplamları, günlük/müşteri/ürün dökümü.</summary>
+/// <summary>Satış raporu: dönem toplamları, günlük/müşteri/ürün dökümü.</summary>
 public sealed record SalesReportResponse(
     DateTime From,
     DateTime To,

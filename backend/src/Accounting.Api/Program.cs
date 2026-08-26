@@ -63,7 +63,7 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// "perm:<izin>" politikaları roller üzerinden değerlendirilir (muhasebe.md bölüm 14).
+// "perm:<izin>" politikaları roller üzerinden değerlendirilir.
 builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, PermissionAuthorizationHandler>();
 

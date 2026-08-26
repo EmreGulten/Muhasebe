@@ -13,7 +13,7 @@ import { api } from "@/lib/api";
 import { getActiveTenantId } from "@/lib/auth-store";
 import type { AiMessageDto, AskAssistantResponse, MeResponse, PagedResponse } from "@/lib/types";
 
-/** Plan bölüm 11.1'deki onaylı soru tiplerinden örnekler. */
+/** Asistanın desteklediği iş sorularından örnekler. */
 const EXAMPLE_QUESTIONS = [
   "Bu ay ne kadar kazandım?",
   "Bana borcu olan müşterileri göster.",
@@ -37,7 +37,7 @@ function timeLabel(iso: string): string {
   return new Date(iso).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
 }
 
-/** AI Asistan: işletme verileri üzerinden doğal dilde soru-cevap (PHASE 9). */
+/** AI Asistan: işletme verileri üzerinden doğal dilde soru-cevap. */
 export function AssistantChat() {
   const [question, setQuestion] = useState("");
   // Bu oturumda gönderilen soru + yanıtlar; geçmiş sorgudan türetilerek birleşir.

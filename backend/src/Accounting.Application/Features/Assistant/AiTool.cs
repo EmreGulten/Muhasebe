@@ -5,7 +5,7 @@ using Accounting.Application.Abstractions;
 namespace Accounting.Application.Features.Assistant;
 
 /// <summary>
-/// AI'ın çağırabileceği onaylı iş aracı (muhasebe.md bölüm 11.1). Araçlar salt
+/// AI'ın çağırabileceği onaylı iş aracı. Araçlar salt
 /// okunurdur, daima TenantId filtresiyle çalışır ve yapılandırılmış JSON +
 /// Türkçe bir "summary" döndürür. AI yalnızca bu kayıt defterindeki araçlara
 /// ulaşabilir — SQL'e hiçbir biçimde dokunmaz.

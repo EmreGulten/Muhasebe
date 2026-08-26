@@ -7,8 +7,8 @@ using Accounting.Application.Abstractions;
 namespace Accounting.Infrastructure.Ai;
 
 /// <summary>
-/// OpenAI uyumlu chat completions sağlayıcısı (muhasebe.md bölüm 16 —
-/// implementasyonlar değiştirilebilir). Tool calling döngüsü burada döner:
+/// OpenAI uyumlu chat completions sağlayıcısı. Sağlayıcı implementasyonu
+/// yapılandırma üzerinden değiştirilebilir. Tool calling döngüsü burada döner:
 /// model araç isterse onaylı araç temsilcisi çağrılır, sonuç "tool" mesajı
 /// olarak geri verilir ve model son yanıtı üretir. Model hiçbir koşulda
 /// SQL'e dokunmaz; yalnızca istekte tanıtılan araçları çağırabilir.

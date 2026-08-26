@@ -12,7 +12,7 @@ import { getActiveTenantId } from "@/lib/auth-store";
 import { formatDate } from "@/lib/parties";
 import type { MeResponse, SubscriptionPlanDto, SubscriptionResponse } from "@/lib/types";
 
-/** Plan özellik anahtarı → Türkçe etiket (bölüm 29). */
+/** Plan özellik anahtarı → Türkçe etiket. */
 const FEATURE_LABELS: Record<string, string> = {
   core: "Cari · Gelir/Gider · Kasa · Temel Satış · Temel Raporlar",
   stock: "Stok yönetimi",
@@ -40,7 +40,7 @@ function warehouseLabel(max: number): string {
   return max < 0 ? "Sınırsız depo" : `${max} depo`;
 }
 
-/** Abonelik: mevcut plan durumu + bölüm 29'daki üç plan kartı (PHASE 10). */
+/** Abonelik: mevcut plan durumu + bölüm 29'daki üç plan kartı. */
 export function SubscriptionView() {
   const queryClient = useQueryClient();
 

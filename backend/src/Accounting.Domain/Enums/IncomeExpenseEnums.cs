@@ -1,6 +1,6 @@
 namespace Accounting.Domain.Enums;
 
-/// <summary>Gelir/gider kategorisi ve kaydının yönü (muhasebe.md bölüm 8).</summary>
+/// <summary>Gelir/gider kategorisi ve kaydının yönü.</summary>
 public enum IncomeExpenseType
 {
     Income = 1,
@@ -9,7 +9,7 @@ public enum IncomeExpenseType
 
 /// <summary>
 /// Gelir/gider kaydının durumu. Kayıtlar değiştirilemez/silinemez; hatalı kayıt
-/// iptal edilir — iptal kasa hareketinin tersini yazar (bölüm 23).
+/// iptal edilir — iptal kasa hareketinin tersini yazar.
 /// </summary>
 public enum IncomeExpenseStatus
 {

@@ -119,7 +119,7 @@ public static class DependencyInjection
         services.AddScoped<GetStockReportHandler>();
         services.AddScoped<GetSalesReportHandler>();
 
-        // AI asistan (bölüm 11): onaylı iş araçları + sohbet.
+        // AI asistan: onaylı iş araçları + sohbet.
         services.AddScoped<IAiTool, GetMonthlyProfitTool>();
         services.AddScoped<IAiTool, GetOverdueReceivablesTool>();
         services.AddScoped<IAiTool, GetTopProductsTool>();
@@ -131,7 +131,7 @@ public static class DependencyInjection
         services.AddScoped<AskAssistantHandler>();
         services.AddScoped<ListAssistantHistoryHandler>();
 
-        // Abonelik (bölüm 30): feature guard + plan yönetimi.
+        // Abonelik: feature guard + plan yönetimi.
         services.AddScoped<SubscriptionService>();
         services.AddScoped<IFeatureGuard>(sp => sp.GetRequiredService<SubscriptionService>());
         services.AddScoped<ListSubscriptionPlansHandler>();

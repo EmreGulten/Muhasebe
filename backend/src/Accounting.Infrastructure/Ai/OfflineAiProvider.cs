@@ -4,8 +4,8 @@ using Accounting.Application.Abstractions;
 namespace Accounting.Infrastructure.Ai;
 
 /// <summary>
-/// Offline asistan (muhasebe.md bölüm 11): API anahtarı yoksa devreye girer.
-/// Anahtar kelime eşleştirmesiyle plan bölüm 11.1'deki onaylı araçlardan
+/// Offline asistan: API anahtarı yoksa devreye girer.
+/// Anahtar kelime eşleştirmesiyle kayıtlı onaylı araçlardan
 /// birini seçip çağırır; yanıt aracın "summary" alanından üretilir. Dış ağa
 /// hiç çıkmaz, SQL'e hiç dokunmaz — diğer sağlayıcılarla aynı araç sözleşmesi
 /// üzerinden çalışır.

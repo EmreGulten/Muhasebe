@@ -6,7 +6,7 @@ using Accounting.Domain.Authorization;
 
 namespace Accounting.Api.Endpoints;
 
-/// <summary>Abonelik uç noktaları (muhasebe.md bölüm 29–31, PHASE 10).</summary>
+/// <summary>Abonelik uç noktaları.</summary>
 public static class SubscriptionEndpoints
 {
     public static void MapSubscriptionEndpoints(this IEndpointRouteBuilder app)
@@ -18,7 +18,7 @@ public static class SubscriptionEndpoints
                 CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(cancellationToken)))
             .WithName("ListSubscriptionPlans")
-            .WithSummary("Plan kataloğu — Başlangıç / Pro / İşletme (bölüm 29)")
+            .WithSummary("Plan kataloğu — Başlangıç / Pro / İşletme")
             .RequireTenant();
 
         group.MapGet("/", async (

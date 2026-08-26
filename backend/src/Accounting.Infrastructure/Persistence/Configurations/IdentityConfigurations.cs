@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Accounting.Infrastructure.Persistence.Configurations;
 
 /// <summary>
-/// Identity tabloları plandaki isimlendirmeyle hizalanır (muhasebe.md bölüm 20).
+/// Identity tabloları plandaki isimlendirmeyle hizalanır.
 /// </summary>
 public sealed class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {

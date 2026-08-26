@@ -27,15 +27,15 @@ internal static class IncomeExpenseQueries
 }
 
 /// <summary>
-/// Kategori listesi. Plandaki varsayılan kategoriler (muhasebe.md bölüm 8:
-/// 13 gider + 4 gelir) eksikse her çağrıda tamamlanır — kullanıcının sildiği
+/// Kategori listesi. Varsayılan 13 gider ve 4 gelir kategorisi eksikse her çağrıda
+/// tamamlanır — kullanıcının sildiği
 /// varsayılan geri gelmez, elle eklenen kategori tohumlamayı engellemez.
 /// "Diğer" her iki tarafta bulunabildiği için benzersizlik tenant + tür içindedir.
 /// </summary>
 public sealed class ListIncomeExpenseCategoriesHandler(
     IApplicationDbContext db, ICurrentTenant currentTenant, TimeProvider timeProvider)
 {
-    /// <summary>Plan bölüm 8'deki varsayılan kategoriler.</summary>
+    /// <summary>Yeni işletmeler için varsayılan gelir ve gider kategorileri.</summary>
     public static readonly (string Name, IncomeExpenseType Type)[] DefaultCategories =
     [
         ("Kira", IncomeExpenseType.Expense),

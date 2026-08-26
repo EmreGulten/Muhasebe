@@ -64,7 +64,7 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRo
     {
         base.OnModelCreating(builder);
 
-        // Identity tabloları plandaki isimlendirmeyle hizalanır (muhasebe.md bölüm 20).
+        // Identity tabloları plandaki isimlendirmeyle hizalanır.
         builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
         builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
         builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
@@ -74,7 +74,7 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRo
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         // Para alanları her zaman numeric(18,2); miktar alanları numeric(18,4) —
-        // float/double asla kullanılmaz (muhasebe.md bölüm 21).
+        // float/double asla kullanılmaz.
         if (Database.IsNpgsql())
         {
             foreach (var entity in builder.Model.GetEntityTypes())

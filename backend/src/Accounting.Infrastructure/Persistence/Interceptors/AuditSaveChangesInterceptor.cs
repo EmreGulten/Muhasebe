@@ -11,8 +11,8 @@ namespace Accounting.Infrastructure.Persistence.Interceptors;
 /// <summary>
 /// Kaydetme anında:
 ///  - IHasTimestamps alanlarını otomatik set eder,
-///  - ISoftDeletable silinmelerini soft-delete'e çevirir (muhasebe.md bölüm 23),
-///  - denetlenebilir entity değişikliklerini AuditLogs'a yazar (muhasebe.md bölüm 22).
+///  - ISoftDeletable silinmelerini soft-delete'e çevirir,
+///  - denetlenebilir entity değişikliklerini AuditLogs'a yazar.
 /// </summary>
 public sealed class AuditSaveChangesInterceptor(
     ICurrentUser currentUser,

@@ -18,7 +18,7 @@ public interface ISoftDeletable
 
 /// <summary>
 /// Tenant'a ait verileri taşıyan entity'ler. Tüm işletme tablolarında
-/// TenantId zorunludur (muhasebe.md bölüm 13).
+/// TenantId zorunludur.
 /// </summary>
 public interface ITenantScoped
 {

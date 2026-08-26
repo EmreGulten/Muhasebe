@@ -19,10 +19,9 @@ using Xunit;
 namespace Accounting.UnitTests;
 
 /// <summary>
-/// PHASE 4 satış özelliği: hesaplamalar (iskonto/KDV), onay atomikliği (stok +
+/// satış özelliği: hesaplamalar (iskonto/KDV), onay atomikliği (stok +
 /// cari + kasa tek kayıtta), yetersiz stok reddi, Draft-dışı değişiklik reddi,
-/// iptal ters hareketleri, aşırı tahsilat reddi, tenant izolasyonu
-/// (muhasebe.md bölüm 6, 23, 24).
+/// iptal ters hareketleri, aşırı tahsilat reddi ve tenant izolasyonu.
 /// </summary>
 public sealed class SaleFeatureTests : IDisposable
 {

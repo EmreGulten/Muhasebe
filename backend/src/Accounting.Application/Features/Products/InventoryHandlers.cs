@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Accounting.Application.Features.Products;
 
 /// <summary>
-/// Manuel stok hareketi (muhasebe.md bölüm 5.2). Sayım, manuel giriş/çıkış ve
+/// Manuel stok hareketi. Sayım, manuel giriş/çıkış ve
 /// iade kullanıcı tarafından girilir; Alış/Satış hareketleri ilgili modüllerin
 /// onay akışından, Transfer ayrı uç noktadan üretilir.
 /// </summary>
@@ -32,7 +32,7 @@ public sealed class CreateInventoryTransactionHandler(
     {
         var tenantId = ProductQueries.RequireTenantId(currentTenant);
 
-        // Stok modülü plana bağlı (bölüm 29–30): Başlangıç planında kapalı.
+        // Stok modülü plana bağlı: Başlangıç planında kapalı.
         await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Stock, cancellationToken);
 
         var product = await UpdateProductHandler.FindProductAsync(db, tenantId, request.ProductId, cancellationToken)
@@ -144,7 +144,7 @@ public sealed class CreateInventoryTransferHandler(
     {
         var tenantId = ProductQueries.RequireTenantId(currentTenant);
 
-        // Stok modülü plana bağlı (bölüm 29–30).
+        // Stok modülü plana bağlı.
         await featureGuard.EnsureFeatureAsync(tenantId, PlanFeatures.Stock, cancellationToken);
 
         if (request.SourceWarehouseId == request.TargetWarehouseId)

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Accounting.Application.Features.Parties;
 
 /// <summary>
-/// Manuel cari hareketi ekler (muhasebe.md bölüm 4.2).
+/// Manuel cari hareketi ekler.
 /// Yalnızca açılış/borçlandırma/alacaklandırma/düzeltme kabul edilir; Satış,
 /// Tahsilat, Alış, Ödeme türleri ilgili modüller tarafından üretilir.
 /// </summary>

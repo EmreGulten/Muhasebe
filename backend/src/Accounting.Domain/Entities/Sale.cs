@@ -4,7 +4,7 @@ using Accounting.Domain.Enums;
 namespace Accounting.Domain.Entities;
 
 /// <summary>
-/// Satış belgesi (muhasebe.md bölüm 6). Draft aşamasında düzenlenebilir;
+/// Satış belgesi. Draft aşamasında düzenlenebilir;
 /// onay (Confirm) tek transaction'da stok düşümü + cari borç (+ varsa tahsilat)
 /// üretir. Onaydan sonra belge değiştirilemez; düzeltme iptal ile yapılır.
 /// Tutarlar numeric(18,2).

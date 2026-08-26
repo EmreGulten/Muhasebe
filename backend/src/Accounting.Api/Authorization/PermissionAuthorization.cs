@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Accounting.Api.Authorization;
 
-/// <summary>Endpoint'in gerektirdiği izin (muhasebe.md bölüm 14).</summary>
+/// <summary>Endpoint'in gerektirdiği izin.</summary>
 public sealed record PermissionRequirement(string Permission) : IAuthorizationRequirement;
 
 /// <summary>

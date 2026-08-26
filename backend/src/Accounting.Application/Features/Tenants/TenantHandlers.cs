@@ -36,7 +36,7 @@ public sealed class CreateTenantHandler(
 
         await db.SaveChangesAsync(cancellationToken);
 
-        // Her yeni işletme deneme aboneliğiyle açılır (bölüm 30).
+        // Her yeni işletme deneme aboneliğiyle açılır.
         await subscriptions.StartTrialAsync(tenant.Id, cancellationToken);
 
         return new TenantResponse(tenant.Id, tenant.Name, TenantRole.Owner.ToString(), joinedAt);
