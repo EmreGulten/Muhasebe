@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeftRight, Landmark, Loader2, Plus } from "lucide-react";
+import { Activity, ArrowLeftRight, Landmark, Loader2, Plus, WalletCards } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -120,28 +120,67 @@ export function CashList() {
   const totalBalance = (accounts ?? [])
     .filter((account) => account.isActive)
     .reduce((sum, account) => sum + account.currentBalance, 0);
+  const totalTransactions = (accounts ?? []).reduce((sum, account) => sum + account.transactionCount, 0);
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-4">
+    <div className="mx-auto grid w-full max-w-6xl gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Kasa & Banka</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Kasa & Banka</h1>
+          <p className="mt-1 text-sm font-medium text-muted-foreground">
             {accounts
               ? `${accounts.length} hesap · toplam ${formatMoney(totalBalance)}`
               : "Yükleniyor..."}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => setTransferOpen(true)}>
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+          <Button className="flex-1 sm:flex-none" variant="outline" onClick={() => setTransferOpen(true)}>
             <ArrowLeftRight className="size-4" />
             Transfer
           </Button>
-          <Button onClick={() => setCreateOpen(true)}>
+          <Button className="flex-1 sm:flex-none" onClick={() => setCreateOpen(true)}>
             <Plus className="size-4" />
             Yeni Hesap
           </Button>
         </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Card className="bg-gradient-to-br from-violet-50 via-card to-indigo-50/70 dark:from-violet-950/30 dark:to-indigo-950/20">
+          <CardContent className="flex-row items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Toplam Bakiye</p>
+              <p className={`mt-1 text-2xl font-bold tabular-nums ${totalBalance < 0 ? "text-destructive" : "text-emerald-600 dark:text-emerald-400"}`}>
+                {accounts ? formatMoney(totalBalance) : "—"}
+              </p>
+            </div>
+            <span className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/10">
+              <WalletCards className="size-5" />
+            </span>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-card to-sky-50/70 dark:to-sky-950/20">
+          <CardContent className="flex-row items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Aktif Hesap</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums">{accounts ? activeAccounts.length : "—"}</p>
+            </div>
+            <span className="flex size-11 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/10">
+              <Landmark className="size-5" />
+            </span>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-card to-amber-50/70 dark:to-amber-950/20">
+          <CardContent className="flex-row items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Toplam Hareket</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums">{accounts ? totalTransactions : "—"}</p>
+            </div>
+            <span className="flex size-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 ring-1 ring-amber-500/10">
+              <Activity className="size-5" />
+            </span>
+          </CardContent>
+        </Card>
       </div>
 
       {isPending ? (
@@ -173,17 +212,19 @@ export function CashList() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {accounts.map((account) => (
             <Link key={account.id} href={`/cash/${account.id}`} className="group">
-              <Card className="h-full transition-colors group-hover:border-primary/50">
-                <CardContent className="grid gap-2">
+              <Card className="h-full bg-gradient-to-br from-card via-card to-primary/5 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-md group-hover:ring-primary/20">
+                <CardContent className="grid gap-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <Landmark className="size-4 text-muted-foreground" />
-                      <span className="font-medium">{account.name}</span>
+                      <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/10">
+                        <Landmark className="size-4" />
+                      </span>
+                      <span className="font-semibold">{account.name}</span>
                     </div>
                     <Badge variant="secondary">{ACCOUNT_TYPE_LABELS[account.type]}</Badge>
                   </div>
                   <span
-                    className={`text-2xl font-semibold tabular-nums ${account.currentBalance < 0 ? "text-destructive" : ""}`}
+                    className={`text-3xl font-bold tracking-tight tabular-nums ${account.currentBalance < 0 ? "text-destructive" : "text-emerald-600 dark:text-emerald-400"}`}
                   >
                     {formatMoney(account.currentBalance)}
                   </span>
@@ -192,7 +233,7 @@ export function CashList() {
                     {account.openingBalance > 0 ? ` · açılış ${formatMoney(account.openingBalance)}` : ""}
                   </p>
                   <div className="flex flex-wrap gap-1">
-                    {account.isDefault && <Badge variant="outline">Varsayılan</Badge>}
+                    {account.isDefault && <Badge className="bg-indigo-500/10 text-indigo-700 ring-indigo-500/20 dark:text-indigo-300" variant="outline">Varsayılan</Badge>}
                     {!account.isActive && <Badge variant="destructive">Pasif</Badge>}
                   </div>
                 </CardContent>

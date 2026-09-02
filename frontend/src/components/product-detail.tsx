@@ -306,7 +306,7 @@ export function ProductDetail({ productId }: { productId: string }) {
             )}
 
             {movements && movements.totalCount > movements.pageSize && (
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-muted-foreground">
                   {movements.totalCount} hareket · Sayfa {movements.page} / {totalPages}
                 </span>
@@ -363,7 +363,7 @@ export function ProductDetail({ productId }: { productId: string }) {
               ürünü pasifleştirmeniz önerilir.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
             <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={remove.isPending}>
               Vazgeç
             </Button>

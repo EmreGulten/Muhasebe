@@ -1,13 +1,12 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, ChevronsUpDown, Loader2, LogOut, Plus } from "lucide-react";
+import { Calculator, Check, ChevronsUpDown, Loader2, LogOut, Menu, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -45,7 +44,10 @@ function TenantSwitcher({ tenants, activeTenantId }: { tenants: TenantMembership
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="h-9 w-full max-w-56 justify-between gap-2 overflow-hidden">
+        <Button
+          variant="outline"
+          className="h-10 w-full max-w-[min(12rem,calc(100vw-8rem))] justify-between gap-2 overflow-hidden md:h-9 md:max-w-56"
+        >
           <span className="truncate">{active ? active.name : "İşletme Seç"}</span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>
@@ -103,9 +105,11 @@ function UserMenu({ fullName, email }: { fullName: string; email: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-9 gap-2 px-2">
+        <Button variant="ghost" className="h-9 gap-2 px-2 hover:bg-primary/5">
           <Avatar className="size-7">
-            <AvatarFallback className="text-xs">{initials(fullName)}</AvatarFallback>
+            <AvatarFallback className="bg-gradient-to-br from-violet-500 to-indigo-600 text-xs font-semibold text-white shadow-sm">
+              {initials(fullName)}
+            </AvatarFallback>
           </Avatar>
           <span className="hidden max-w-40 truncate text-sm font-medium sm:inline">{fullName}</span>
           <ChevronsUpDown className="size-4 opacity-50" />
@@ -152,13 +156,13 @@ function SidebarNav() {
             key={item.href}
             href={item.href}
             aria-current={isActive ? "page" : undefined}
-            className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+            className={`flex items-center gap-3 rounded-lg border-l-2 px-3 py-2 text-sm transition-all duration-200 ${
               isActive
-                ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-sm"
-                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                ? "border-primary bg-primary/10 font-semibold text-primary shadow-sm shadow-primary/5"
+                : "border-transparent text-muted-foreground hover:bg-primary/5 hover:text-foreground"
             }`}
           >
-            <item.icon className="size-4" />
+            <item.icon className={`size-4 ${isActive ? "text-primary" : ""}`} />
             {item.label}
           </Link>
         );
@@ -169,36 +173,57 @@ function SidebarNav() {
 
 function MobileNav() {
   const pathname = usePathname();
+  const primaryItems = NAV_ITEMS.slice(0, 4);
+  const moreItems = NAV_ITEMS.slice(4);
+  const moreIsActive = moreItems.some((item) => pathname.startsWith(item.href));
+
   return (
-    <nav className="flex items-center gap-1 overflow-x-auto px-2" aria-label="Ana gezinme">
-      {NAV_ITEMS.map((item) => {
+    <nav
+      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-background/95 px-1 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-18px_rgba(0,0,0,0.45)] backdrop-blur-xl md:hidden"
+      aria-label="Ana gezinme"
+    >
+      {primaryItems.map((item) => {
         const isActive = pathname.startsWith(item.href);
-        if (!item.enabled) {
-          return (
-            <span
-              key={item.href}
-              aria-disabled="true"
-              className="flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground/60"
-            >
-              <item.icon className="size-3.5" />
-              {item.label}
-            </span>
-          );
-        }
         return (
           <Link
             key={item.href}
             href={item.href}
             aria-current={isActive ? "page" : undefined}
-            className={`flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs transition-colors ${
-              isActive ? "bg-primary/10 font-medium text-primary" : "text-muted-foreground hover:bg-accent"
+            className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-[10px] transition-colors ${
+              isActive ? "font-semibold text-primary" : "text-muted-foreground"
             }`}
           >
-            <item.icon className="size-3.5" />
-            {item.label}
+            <item.icon className="size-5" />
+            <span className="max-w-full truncate">{item.label}</span>
           </Link>
         );
       })}
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-[10px] outline-none transition-colors ${
+              moreIsActive ? "font-semibold text-primary" : "text-muted-foreground"
+            }`}
+            aria-label="Diğer bölümler"
+          >
+            <Menu className="size-5" />
+            <span>Diğer</span>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" side="top" sideOffset={10} className="mb-1 w-56">
+          <DropdownMenuLabel>Diğer bölümler</DropdownMenuLabel>
+          {moreItems.map((item) => (
+            <DropdownMenuItem key={item.href} asChild>
+              <Link href={item.href} className={pathname.startsWith(item.href) ? "bg-accent font-medium" : undefined}>
+                <item.icon className="size-4" />
+                {item.label}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </nav>
   );
 }
@@ -233,13 +258,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-svh w-full">
-      <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground md:flex">
-        <div className="flex h-16 items-center gap-3 border-b px-4 font-semibold tracking-tight">
-          <BrandMark />
-          <span>
-            Muhasebe
-            <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-sidebar-foreground/50">İşletme paneli</span>
+      <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r bg-sidebar/95 text-sidebar-foreground shadow-sm backdrop-blur md:flex">
+        <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4 font-bold tracking-tight">
+          <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-primary-foreground shadow-sm shadow-primary/20">
+            <Calculator className="size-4" />
           </span>
+          Muhasebe
         </div>
         <div className="flex-1 overflow-y-auto">
           <SidebarNav />
@@ -250,9 +274,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex h-16 items-center gap-3 border-b bg-background/90 px-4 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75">
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b bg-background/85 px-4 shadow-xs backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
           <div className="flex items-center gap-2 font-semibold md:hidden">
-            <BrandMark className="size-8" />
+            <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-primary-foreground shadow-sm">
+              <Calculator className="size-4" />
+            </span>
           </div>
           <div className="md:hidden">
             <TenantSwitcher tenants={me.tenants} activeTenantId={getActiveTenantId()} />
@@ -261,10 +287,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <UserMenu fullName={me.user.fullName} email={me.user.email} />
           </div>
         </header>
-        <div className="border-b md:hidden">
-          <MobileNav />
-        </div>
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        <MobileNav />
+        <main className="flex-1 p-3 pb-24 sm:p-4 sm:pb-24 md:p-6">{children}</main>
       </div>
     </div>
   );

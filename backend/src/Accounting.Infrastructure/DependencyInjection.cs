@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using Accounting.Application.Abstractions;
 using Accounting.Domain.Entities;
 using Accounting.Infrastructure.Ai;
+using Accounting.Infrastructure.Backups;
 using Accounting.Infrastructure.Identity;
 using Accounting.Infrastructure.MultiTenancy;
 using Accounting.Infrastructure.Persistence;
@@ -35,6 +36,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+        services.AddScoped<ITenantBackupService, TenantBackupService>();
 
         // ASP.NET Core Identity — parola politikası güçlü, e-posta benzersiz.
         services

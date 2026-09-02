@@ -132,6 +132,7 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
 var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
 api.MapAuthEndpoints();
 api.MapTenantEndpoints();
+api.MapTenantBackupEndpoints();
 api.MapPartyEndpoints();
 api.MapProductEndpoints();
 api.MapSaleEndpoints();

@@ -306,8 +306,8 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
           return (
             <Card key={field.id}>
               <CardContent className="grid gap-3">
-                <div className="grid gap-3 md:grid-cols-12">
-                  <div className="grid gap-2 md:col-span-4">
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-12">
+                  <div className="col-span-2 grid gap-2 md:col-span-4">
                     <Label htmlFor={`item-product-${index}`} className="text-xs text-muted-foreground">
                       Ürün / Hizmet *
                     </Label>
@@ -395,7 +395,7 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
                     )}
                   </div>
 
-                  <div className="flex items-end justify-end md:col-span-2">
+                  <div className="col-span-2 flex items-end justify-end md:col-span-2">
                     <Button
                       type="button"
                       variant="ghost"
@@ -465,7 +465,7 @@ export function SaleForm({ sale }: { sale?: SaleResponse }) {
         </Card>
       </div>
 
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
         <Button type="button" variant="outline" onClick={() => router.push("/sales")} disabled={isSubmitting}>
           Vazgeç
         </Button>

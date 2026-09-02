@@ -336,7 +336,7 @@ export function InventoryMovementForm({
         {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
       </div>
 
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
         <Button type="button" variant="outline" onClick={onDone} disabled={isSubmitting}>
           Vazgeç
         </Button>

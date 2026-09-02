@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  agentRules: false,
   async rewrites() {
     // Tarayıcı aynı origin'de /api/* çağırır; Next bunu backend'e proxy'ler.
     // Böylece CORS gerekmez ve httpOnly refresh cookie'si doğal akar.

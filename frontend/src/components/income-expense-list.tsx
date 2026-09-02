@@ -386,7 +386,7 @@ export function IncomeExpenseList() {
       )}
 
       {data && data.totalCount > data.pageSize && (
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
           <span className="text-muted-foreground">
             Sayfa {data.page} / {totalPages} · {data.totalCount} kayıt
           </span>

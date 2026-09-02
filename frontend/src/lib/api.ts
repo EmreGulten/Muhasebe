@@ -53,6 +53,16 @@ async function parseError(response: Response): Promise<string> {
 }
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const response = await authenticatedFetch(path, init);
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  return (await response.json()) as T;
+}
+
+async function authenticatedFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const doFetch = () =>
     fetch(path, {
       ...init,
@@ -84,10 +94,28 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (!response.ok) {
     throw new ApiError(await parseError(response), response.status);
   }
+  return response;
+}
 
-  if (response.status === 204) {
-    return undefined as T;
-  }
+export async function apiDownload(path: string): Promise<{ blob: Blob; fileName: string }> {
+  const response = await authenticatedFetch(path);
+  const disposition = response.headers.get("content-disposition") ?? "";
+  const encoded = disposition.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
+  const plain = disposition.match(/filename="?([^";]+)"?/i)?.[1];
+  return {
+    blob: await response.blob(),
+    fileName: encoded ? decodeURIComponent(encoded) : plain ?? "isletme-yedegi.json",
+  };
+}
 
-  return (await response.json()) as T;
+export async function apiRestoreBackup(file: File): Promise<{
+  importedRowCount: number;
+  importedTableCount: number;
+}> {
+  const response = await authenticatedFetch("/api/v1/tenants/current/backup/restore", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: await file.arrayBuffer(),
+  });
+  return response.json();
 }

@@ -2,6 +2,7 @@ using Accounting.Application;
 using Accounting.Application.Abstractions;
 using Accounting.Domain.Entities;
 using Accounting.Infrastructure.Ai;
+using Accounting.Infrastructure.Backups;
 using Accounting.Infrastructure.Identity;
 using Accounting.Infrastructure.Payments;
 using Accounting.Infrastructure.MultiTenancy;
@@ -46,6 +47,7 @@ public sealed class TestApp : IDisposable
             .UseSqlite(_connection)
             .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>()));
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+        services.AddScoped<ITenantBackupService, TenantBackupService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
         services

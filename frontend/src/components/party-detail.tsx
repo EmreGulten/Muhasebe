@@ -267,7 +267,7 @@ export function PartyDetail({ partyId, basePath }: { partyId: string; basePath: 
           )}
 
           {statement && statement.totalCount > statement.pageSize && (
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
               <span className="text-muted-foreground">
                 {statement.totalCount} hareket · Sayfa {statement.page} / {totalPages}
               </span>
@@ -322,7 +322,7 @@ export function PartyDetail({ partyId, basePath }: { partyId: string; basePath: 
               pasifleştirmeniz önerilir.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
             <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={remove.isPending}>
               Vazgeç
             </Button>

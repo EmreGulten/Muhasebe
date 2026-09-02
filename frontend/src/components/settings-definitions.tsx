@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { DatabaseBackup, Download, Loader2, Pencil, Plus, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { api } from "@/lib/api";
+import { api, apiDownload, apiRestoreBackup } from "@/lib/api";
 import type { CategoryDto, UnitDto, WarehouseDto } from "@/lib/types";
 
 /** Kategori/birim/depo tanımları: kullanım sayılarıyla birlikte satır içi yönetim. */
@@ -45,7 +45,118 @@ export function SettingsDefinitions() {
       <CategorySection />
       <UnitSection />
       <WarehouseSection />
+      <TenantBackupSection />
     </div>
+  );
+}
+
+function TenantBackupSection() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { data: tenantContext } = useQuery({
+    queryKey: ["current-tenant"],
+    queryFn: () => api<{ role: string }>("/api/v1/tenants/current"),
+  });
+  const isOwner = tenantContext?.role === "Owner";
+
+  const download = useMutation({
+    mutationFn: () => apiDownload("/api/v1/tenants/current/backup"),
+    onSuccess: ({ blob, fileName }) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("İşletme yedeği indirildi.");
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : "Yedek indirilemedi."),
+  });
+
+  const restore = useMutation({
+    mutationFn: (file: File) => apiRestoreBackup(file),
+    onSuccess: (result) => {
+      toast.success(`${result.importedRowCount} kayıt geri yüklendi.`);
+      setSelectedFile(null);
+      if (inputRef.current) inputRef.current.value = "";
+      window.location.reload();
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : "Yedek geri yüklenemedi."),
+  });
+
+  const confirmRestore = () => {
+    if (!selectedFile) return;
+    const approved = window.confirm(
+      "Yedek bu işletmeye geri yüklenecek. Bu işlem yalnızca işletme tamamen boşsa çalışır. Devam edilsin mi?",
+    );
+    if (approved) restore.mutate(selectedFile);
+  };
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <div className="flex items-start gap-3">
+          <div className="rounded-xl bg-primary/10 p-2.5 text-primary">
+            <DatabaseBackup className="size-5" />
+          </div>
+          <div>
+            <CardTitle className="text-base">İşletme Yedeği</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">
+              İşletme verilerini cihazına indir veya boş bir işletmeye geri yükle.
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {!isOwner && tenantContext && (
+          <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800 ring-1 ring-amber-200">
+            Yedekleme işlemlerini yalnızca işletme sahibi yönetebilir.
+          </p>
+        )}
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-xl bg-muted/40 p-4 ring-1 ring-border">
+            <p className="font-medium">Yedeği indir</p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              Finans, stok, satış, alış ve tanım verileri JSON dosyası olarak cihazında saklanır.
+            </p>
+            <Button
+              className="mt-4 w-full sm:w-auto"
+              variant="outline"
+              disabled={!isOwner || download.isPending}
+              onClick={() => download.mutate()}
+            >
+              {download.isPending ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+              Yedeği İndir
+            </Button>
+          </div>
+          <div className="rounded-xl bg-muted/40 p-4 ring-1 ring-border">
+            <p className="font-medium">Yedeği geri yükle</p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              Güvenlik için yalnızca veri içermeyen boş bir işletmeye yükleme yapılabilir.
+            </p>
+            <input
+              ref={inputRef}
+              type="file"
+              accept="application/json,.json"
+              className="mt-3 block w-full text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:font-medium file:text-primary"
+              disabled={!isOwner || restore.isPending}
+              onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)}
+            />
+            <Button
+              className="mt-3 w-full sm:w-auto"
+              disabled={!isOwner || !selectedFile || restore.isPending}
+              onClick={confirmRestore}
+            >
+              {restore.isPending ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+              Geri Yükle
+            </Button>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Parolalar, kullanıcı üyelikleri, abonelik bilgileri, AI konuşmaları ve denetim kayıtları yedeğe dahil edilmez.
+        </p>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -435,7 +546,7 @@ function NameDialog({
             <Input id="definition-name" autoFocus {...register("name")} />
             {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
             <Button type="button" variant="outline" onClick={onDone} disabled={isSubmitting}>
               Vazgeç
             </Button>
@@ -509,7 +620,7 @@ function UnitDialog({ unit, onDone }: { unit?: UnitDto; onDone: () => void }) {
             <Input id="unit-code" placeholder="adet" {...register("code")} />
             {errors.code && <p className="text-sm text-destructive">{errors.code.message}</p>}
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
             <Button type="button" variant="outline" onClick={onDone} disabled={isSubmitting}>
               Vazgeç
             </Button>
@@ -627,7 +738,7 @@ function WarehouseDialog({ warehouse, onDone }: { warehouse?: WarehouseDto; onDo
               />
             </div>
           )}
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
             <Button type="button" variant="outline" onClick={onDone} disabled={isSubmitting}>
               Vazgeç
             </Button>
@@ -666,7 +777,7 @@ function ConfirmDeleteDialog<T extends { id: string }>({
             {target ? name(target) : ""} silinecek. Kullanımında geçmiş kayıt olan tanımlar silinemez.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
           <Button variant="outline" onClick={onClose} disabled={pending}>
             Vazgeç
           </Button>
